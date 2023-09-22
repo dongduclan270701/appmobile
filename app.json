@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "appmobile",
-    "slug": "appmobile",
+    "name": "App Awesome",
+    "slug": "app-awesome",
+    "description": "this is awesome app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,6 +11,11 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "useClassicUpdates": true,
+      "enabled": true,
+      "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
@@ -25,6 +31,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ea1fad85-1b3d-48bc-9780-18ae0ab12575"
+      }
+    },
+    "owner": "ranconkoyx"
   }
 }
