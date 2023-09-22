@@ -21,7 +21,7 @@ const Product = ({ navigation }) => {
             </HomepageContainer>
             <View >
                 <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'laptop-gaming' })
+                    navigation.navigate('ProductListScreen', { category: 'laptop-gaming', nameCategory:'Laptop Gaming' })
                 }}>
                     <ImageBackground
                         source={require('../../assets/laptopGaming.jpg')}
@@ -35,7 +35,7 @@ const Product = ({ navigation }) => {
 
             <View >
                 <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'laptop' })
+                    navigation.navigate('ProductListScreen', { category: 'laptop', nameCategory:'Laptop' })
                 }}>
                     <ImageBackground
                         source={require('../../assets/laptop.jpg')}
@@ -49,7 +49,7 @@ const Product = ({ navigation }) => {
 
             <View>
                 <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'pc-creator' })
+                    navigation.navigate('ProductListScreen', { category: 'pc-creator', nameCategory:'PC Creator' })
                 }}>
                     <ImageBackground
                         source={require('../../assets/PC.jpg')}
@@ -62,7 +62,7 @@ const Product = ({ navigation }) => {
             </View>
             <View>
                 <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'pc-company' })
+                    navigation.navigate('ProductListScreen', { category: 'pc-company', nameCategory:'PC Company' })
                 }}>
                     <ImageBackground
                         source={require('../../assets/PC.jpg')}
@@ -75,7 +75,7 @@ const Product = ({ navigation }) => {
             </View>
             <View>
                 <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'pc-gaming' })
+                    navigation.navigate('ProductListScreen', { category: 'pc-gaming', nameCategory:'PC Gaming' })
                 }}>
                     <ImageBackground
                         source={require('../../assets/PC.jpg')}
@@ -88,7 +88,7 @@ const Product = ({ navigation }) => {
             </View>
             <View>
                 <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'apple' })
+                    navigation.navigate('ProductListScreen', { category: 'apple', nameCategory:'Apple' })
                 }}>
                     <ImageBackground
                         source={require('../../assets/Apple.png')}

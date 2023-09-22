@@ -10,6 +10,7 @@ import Homepage from '../screens/Homepage'
 import Product from '../screens/Product'
 import Cart from '../screens/Cart'
 import User from '../screens/User'
+import Payment from '../screens/Payment'
 import ProductListScreen from '../screens/ProductListScreen'
 import ProductDetailScreen from '../screens/ProductDetailScreen'
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -86,6 +87,7 @@ const RootStack = () => {
                 <Stack.Screen name='HomeDrawer' component={HomeDrawer} />
                 <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
                 <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} />
+                <Stack.Screen name="Payment" component={Payment} />
             </Stack.Navigator>
         </NavigationContainer>
     )

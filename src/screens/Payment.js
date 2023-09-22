@@ -8,8 +8,8 @@ import {
     HomepageContainer, Logo
 } from '../components/styles'
 
-import { fetchBestLaptop } from '../apis/index'
-const Cart = ({ navigation }) => {
+import { } from '../apis/index'
+const Payment = ({ navigation }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [dataCart, setDataCart] = useState({
         "product": [
@@ -39,21 +39,11 @@ const Cart = ({ navigation }) => {
             },
         ],
     })
-    const handleQuantityChange = (index, newQuantity) => {
-        const updatedDataCart = { ...dataCart }
-        updatedDataCart.product[index].quantity = newQuantity
-        setDataCart(updatedDataCart);
-    };
-    const handleRemoveItem = (index) => {
-        const updatedDataCart = { ...dataCart }
-        updatedDataCart.product.splice(index, 1)
-        setDataCart(updatedDataCart)
-    };
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={{ backgroundColor: 'black' }}>
                 <HomepageContainer>
-                    <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Cart</Text>
+                    <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Payment</Text>
                 </HomepageContainer>
                 {dataCart.product.map((item, index) => (
                     <ScrollView horizontal={true} style={styles.cartItems} key={index}>
@@ -64,39 +54,20 @@ const Cart = ({ navigation }) => {
                                 <Text style={styles.productPrice}>{formatter.format(item.nowPrice)} VNĐ</Text>
                             </View>
                             <View style={styles.quantityContainer}>
-                                <TouchableOpacity
-                                    style={styles.quantityButton}
-                                    onPress={() => handleQuantityChange(index, item.quantity - 1)}
-                                >
-                                    <Text style={styles.quantityButtonText}>-</Text>
-                                </TouchableOpacity>
-                                <Text style={styles.quantityText}>{item.quantity}</Text>
-                                <TouchableOpacity
-                                    style={styles.quantityButton}
-                                    onPress={() => handleQuantityChange(index, item.quantity + 1)}
-                                >
-                                    <Text style={styles.quantityButtonText}>+</Text>
-                                </TouchableOpacity>
+                                <Text style={styles.quantityText}>x {item.quantity}</Text>
                             </View>
-                            <TouchableOpacity style={styles.removeButton} onPress={() => handleRemoveItem(index)}>
-                                <Text style={styles.removeButtonText}>Xóa</Text>
-                            </TouchableOpacity>
                         </View>
                     </ScrollView>
                 ))}
             </ScrollView>
-            <View style={styles.totalContainer}>
-                <Text style={styles.sum}>Sum: <Text style={{ color: 'red' }}>230,123,123 VNĐ</Text></Text>
-                <TouchableOpacity
-                    style={styles.buyButton}
-                    onPress={() => {
-                        navigation.navigate('Payment')
-                    }}
-                >
-                    {/*  */}
-                    <Text style={styles.buyButtonText}>Payment</Text>
-                </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+                style={styles.buyButton}
+                onPress={() => {
+                    // navigation.navigate('Cart')
+                }}
+            >
+                <Text style={styles.buyButtonText}>Create Order</Text>
+            </TouchableOpacity>
         </View>
 
     );
@@ -158,54 +129,21 @@ const styles = StyleSheet.create({
         color: 'red',
         marginTop: 8,
     },
-    removeButton: {
-        backgroundColor: 'red',
-        padding: 20,
-    },
-    removeButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
-    checkoutButton: {
-        width: '30%',
-        backgroundColor: 'red',
-        padding: 16,
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    checkoutButtonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
     buyButton: {
-        bottom: 90,
+        position: 'absolute',
+        left: 100,
+        right: 100,
+        bottom: 30,
         backgroundColor: 'red',
-        padding: 25,
-        justifyContent: 'center',
-        width:'40%'
+        padding: 10,
+        alignItems: 'center',
+        borderRadius: 30,
     },
     buyButtonText: {
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-    },
-    totalContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    sum: {
-        width: '70%',
-        borderWidth: 1,
-        backgroundColor:'black',
-        bottom: 90,
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
-        padding: 25,
-        justifyContent: 'center',
     }
-
 });
 
-export default Cart;
+export default Payment;

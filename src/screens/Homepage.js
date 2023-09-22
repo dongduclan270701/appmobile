@@ -57,6 +57,7 @@ const Homepage = ({ navigation, route }) => {
                 console.log(error)
             })
     }, []);
+
     return (
         <ScrollView style={{ backgroundColor: 'black' }}>
             <HomepageContainer>
@@ -68,7 +69,6 @@ const Homepage = ({ navigation, route }) => {
                     <Logo source={require('../../assets/search.png')} style={{ width: 25, height: 25, tintColor: 'white', marginTop: 25 }} />
                 </TouchableOpacity>
             </HomepageContainer>
-
             <View style={styles.category}>
                 <ImageBackground
                     source={require('../../assets/laptopGaming.jpg')}
@@ -85,7 +85,6 @@ const Homepage = ({ navigation, route }) => {
                     <Text style={styles.text2}>Laptop</Text>
                 </ImageBackground>
             </View>
-
             <View style={styles.category}>
                 <ImageBackground
                     source={require('../../assets/PC.jpg')}
@@ -109,7 +108,6 @@ const Homepage = ({ navigation, route }) => {
                     <Text style={styles.text4}>PC Gaming</Text>
                 </ImageBackground>
             </View>
-
             <View style={styles.category}>
                 <ImageBackground
                     source={require('../../assets/Apple.png')}
@@ -166,7 +164,6 @@ const Homepage = ({ navigation, route }) => {
                     </View>
                 }
             </View>
-
             <View style={styles.container}>
                 <Text style={{ color: 'white', paddingLeft: 10, paddingBottom: 10, fontSize: 16, fontWeight: 'bold' }}>Special offer</Text>
                 <FlatList
@@ -180,7 +177,6 @@ const Homepage = ({ navigation, route }) => {
                     )}
                 />
             </View>
-
             <View style={styles.container}>
                 <LineHomePage />
                 <Text style={{ color: 'white', paddingLeft: 10, paddingBottom: 10, fontSize: 16, fontWeight: 'bold' }}>Pc Gaming Best Selling</Text>
@@ -223,7 +219,6 @@ const Homepage = ({ navigation, route }) => {
                     </View>
                 }
             </View>
-
             <View style={styles.container}>
                 <Text style={{ color: 'white', paddingLeft: 10, paddingBottom: 10, fontSize: 16, fontWeight: 'bold' }}>Special activities</Text>
                 <FlatList
@@ -237,7 +232,6 @@ const Homepage = ({ navigation, route }) => {
                     )}
                 />
             </View>
-
             <View style={styles.container}>
                 <LineHomePage />
                 <Text style={{ color: 'white', paddingLeft: 10, paddingBottom: 10, fontSize: 16, fontWeight: 'bold' }}>Pc Company Best Selling</Text>

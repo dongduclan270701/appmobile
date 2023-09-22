@@ -20,6 +20,7 @@ const { width, height } = Dimensions.get('window');
 const ProductListScreen = ({ navigation, route }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const data = route.params
+    console.log(data)
     const [goods, setGoods] = useState(null)
     const [filter, setFilter] = useState({ sort: 'none', collection: '', category: ['', '', '', '', ''], minPrice: 0, maxPrice: 90000000 })
     useEffect(() => {
@@ -38,6 +39,7 @@ const ProductListScreen = ({ navigation, route }) => {
     return (
         <View style={{ backgroundColor: 'black', flex: 1 }}>
             <HomepageContainer>
+            <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>{data.nameCategory}</Text>
             </HomepageContainer>
             <View style={{ paddingBottom: 100 }}>
                 {goods ? <FlatList data={goods}
