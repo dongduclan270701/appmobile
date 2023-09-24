@@ -3,24 +3,20 @@ import {
     View,
     StyleSheet,
     Text,
-    ScrollView,
-    ImageBackground,
     FlatList,
     TouchableOpacity,
     Image,
     ActivityIndicator,
     Dimensions
 } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import {
-    Colors, HomepageContainer, Logo, LineHomePage, Loading
+    HomepageContainer
 } from '../components/styles'
 import { fetchProductCollection } from '../apis/index'
 const { width, height } = Dimensions.get('window');
 const ProductListScreen = ({ navigation, route }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const data = route.params
-    console.log(data)
     const [goods, setGoods] = useState(null)
     const [filter, setFilter] = useState({ sort: 'none', collection: '', category: ['', '', '', '', ''], minPrice: 0, maxPrice: 90000000 })
     useEffect(() => {

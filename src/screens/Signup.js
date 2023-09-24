@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    TouchableOpacity,
+    Text,
+    AsyncStorage
+} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Formik } from 'formik'
 import { Octicons, Ionicons } from '@expo/vector-icons'
@@ -20,14 +26,13 @@ import {
     MsgBox,
     Line,
     ExtraView,
-    ExtraText,
     TextLink,
     TextLinkContent
 } from '../components/styles'
 import { createNewUsers } from '../apis/index'
 const { brand, darkLight } = Colors
 
-const Signup = ({navigation}) => {
+const Signup = ({ navigation }) => {
     const [hidePassword, setHidePassword] = useState(true)
     const [message, setMessage] = useState()
     const [messageType, setMessageType] = useState()
@@ -41,8 +46,8 @@ const Signup = ({navigation}) => {
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear();
         const today = `${year}-${month}-${day}`;
-        const {rePassword, ...newData} = values
-        const newDate = {...newData, createdDate:today, lastLogin:{time: time, date:today}}
+        const { rePassword, ...newData } = values
+        const newDate = { ...newData, createdDate: today, lastLogin: { time: time, date: today } }
         createNewUsers(newDate)
             .then(result => {
                 setSubmitting(false)
@@ -71,16 +76,16 @@ const Signup = ({navigation}) => {
                 <PageTitle>KTech</PageTitle>
                 <SubTitle>Account Signup</SubTitle>
                 <Formik
-                    initialValues={{ username:'', email: '', password: '', rePassword:'' }}
+                    initialValues={{ username: '', email: '', password: '', rePassword: '' }}
                     onSubmit={(values, { setSubmitting }) => {
                         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                         if (values.email === '' || values.password === '' || values.username === '' || values.rePassword === '') {
                             handleMessage('Please fill all the fields')
                             setSubmitting(false)
-                        }else if (values.password !== values.rePassword ) {
+                        } else if (values.password !== values.rePassword) {
                             handleMessage('Confirm password incorrect')
                             setSubmitting(false)
-                        } else if(re.test(values.email) === false){
+                        } else if (re.test(values.email) === false) {
                             handleMessage('Email incorrect format')
                             setSubmitting(false)
                         } else if (values.password.length < 8 || /[A-Z]/.test(values.password) === false) {
@@ -102,7 +107,6 @@ const Signup = ({navigation}) => {
                                 onChangeText={handleChange('username')}
                                 onBlur={handleBlur('username')}
                                 value={values.username}
-                                keyboardType='username'
                             />
                             <MyTextInput
                                 label='Email'
@@ -112,7 +116,6 @@ const Signup = ({navigation}) => {
                                 onChangeText={handleChange('email')}
                                 onBlur={handleBlur('email')}
                                 value={values.email}
-                                keyboardType='email-address'
                             />
                             <MyTextInput
                                 label='Password'
@@ -150,7 +153,7 @@ const Signup = ({navigation}) => {
                             </StyledButton>
                             <Line />
                             <ExtraView>
-                                <ExtraText> Already have an account?</ExtraText>
+                                <Text style={{ color: 'white' }}> Already have an account?</Text>
                                 <TextLink onPress={() => navigation.navigate('Login')}>
                                     <TextLinkContent>
                                         Sign in

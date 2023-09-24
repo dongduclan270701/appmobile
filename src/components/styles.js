@@ -35,7 +35,6 @@ export const InnerContainer = styled.View`
 export const Avatar = styled.Image`
     width: 100px;
     height: 100px;
-    margin: auto;
     border-radius: 50px;
     border-width: 2px;
     border-color: ${secondary};
@@ -45,7 +44,7 @@ export const Avatar = styled.Image`
 
 export const HomepageImage = styled.Image`
     height:50%;
-    min-width:100%
+    min-width:100%;
 `
 
 export const PageLogo = styled.Image`
@@ -80,11 +79,10 @@ export const SubTitle = styled.Text`
 
 
 export const StyledFormArea = styled.View`
-    width:90%
+    width:90%;
 `
 
 export const StyledTextInput = styled.TextInput`
-    background-color: none;
     border: 1px solid white;
     padding: 15px;
     padding-left:55px;
@@ -93,8 +91,8 @@ export const StyledTextInput = styled.TextInput`
     font-size: 16px;
     height: 60px;
     margin-vertical:3px;
-    margin-bottom: 10p;
-    color: ${tertiary}
+    margin-bottom: 10px;
+    color: ${tertiary};
 `
 
 export const StyledInputLabel = styled.Text`
@@ -107,13 +105,13 @@ export const LeftIcon = styled.View`
     left: 15px;
     top: 32px;
     position: absolute;
-    z-index: 1
+    z-index: 1;
 `
 export const RightIcon = styled.TouchableOpacity`
     right: 15px;
     top:32px;
     position: absolute;
-    z-index: 1
+    z-index: 1;
 `
 
 export const StyledButton = styled.TouchableOpacity`
@@ -123,7 +121,7 @@ export const StyledButton = styled.TouchableOpacity`
     align-items:center;
     border-radius: 5px;
     margin-vertical: 5px;
-    height: 60px
+    height: 60px;
 `
 
 export const Loading = styled.TouchableOpacity`
@@ -132,12 +130,12 @@ export const Loading = styled.TouchableOpacity`
     align-items:center;
     border-radius: 5px;
     margin-vertical: 5px;
-    height: 60px
+    height: 60px;
 `
 
 export const ButtonText = styled.Text`
     color: white;
-    font-size:16px
+    font-size:16px;
 `
 
 export const MsgBox = styled.Text`
@@ -151,38 +149,45 @@ export const Line = styled.View`
     height: 1px;
     width: 100%;
     background-color: ${darkLight};
-    margin-vertical: 10px
+    margin-vertical: 10px;
 `
 
 export const LineHomePage = styled.View`  
     height: 2px;
     width: 100%;
     background-color: #ff3a3a;
-    margin-bottom: 10px
+    margin-bottom: 10px;
+`
+export const LinePayment = styled.View`  
+    height: 1px;
+    margin-vertical:10px;
+    width: 100%;
+    background-color: #ff3a3a;
+    margin-bottom: 10px;
 `
 
 export const ExtraView = styled.View`
     justify-content: center;
     flex-direction: row;
     align-items: center;
-    padding: 10px
+    padding: 10px;
 `
 
 export const ExtraText = styled.Text`
     justify-content: center;
     align-item:center;
     color: ${tertiary};
-    font-size: 15px
+    font-size: 15px;
 `
 
 export const TextLink = styled.TouchableOpacity`
     justify-content: center;
-    align-item:center
+    align-item:center;
 `
 
 export const TextLinkContent = styled.Text`
     color: ${brand};
-    font-size: 15px
+    font-size: 15px;
 `
 
 export const HomepageContainer = styled.View`
@@ -194,7 +199,7 @@ export const HomepageContainer = styled.View`
     color: white;
     overflow-y:scroll;
     background-color:black;
-    flex-direction: row
+    flex-direction: row;
 `
 export const Logo = styled.Image`
     marginTop:20px; 

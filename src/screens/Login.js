@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    ActivityIndicator,
+    Text,
+} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Formik } from 'formik'
 import { Octicons, Ionicons } from '@expo/vector-icons'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
 import {
     StyledContainer,
     InnerContainer,
@@ -20,30 +27,35 @@ import {
     MsgBox,
     Line,
     ExtraView,
-    ExtraText,
     TextLink,
     TextLinkContent
 } from '../components/styles'
 import { fetchUserDetails } from '../apis/index'
 const { brand, darkLight, primary } = Colors
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation, handleSetLogged }) => {
     const [hidePassword, setHidePassword] = useState(true)
-    const [information, setInformation] = useState({ email: '', password: '' })
     const [message, setMessage] = useState()
     const [messageType, setMessageType] = useState()
-    const handleLogin = (values, setSubmitting) => {
+    const handleLogin = async (values, setSubmitting) => {
         fetchUserDetails(values.email, values.password)
             .then(result => {
                 setSubmitting(false)
                 if (result === 'Email does not exist') {
                     setMessage(result)
                     setMessageType(type)
-                } else if(result === 'incorrect password') {
+                } else if (result === 'incorrect password') {
                     setMessage(result)
                     setMessageType(type)
                 } else {
-                    navigation.navigate('HomeDrawer', result)
+                    try {
+                        AsyncStorage.setItem('token', result.token);
+                        AsyncStorage.setItem('userInformation', JSON.stringify(result.user));
+                        handleSetLogged(result)
+                        navigation.navigate('HomeDrawer')
+                    } catch (error) {
+                        console.error('Lỗi khi lưu trữ:', error);
+                    }
                 }
             })
             .catch(error => {
@@ -51,10 +63,12 @@ const Login = ({ navigation }) => {
                 setSubmitting(false)
             })
     }
+
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message)
         setMessageType(type)
     }
+
     return (
         <StyledContainer>
             <StatusBar style="dark" />
@@ -83,7 +97,6 @@ const Login = ({ navigation }) => {
                                 onChangeText={handleChange('email')}
                                 onBlur={handleBlur('email')}
                                 value={values.email}
-                                keyboardType='email-address'
                             />
                             <MyTextInput
                                 label='Password'
@@ -112,7 +125,7 @@ const Login = ({ navigation }) => {
                             </StyledButton>}
                             <Line />
                             <ExtraView>
-                                <ExtraText> Don't have an account already?</ExtraText>
+                                <Text style={{ color: 'white' }}> Don't have an account already?</Text>
                                 <TextLink onPress={() => navigation.navigate('Signup')}>
                                     <TextLinkContent>
                                         Signup

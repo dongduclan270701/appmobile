@@ -5,13 +5,10 @@ import {
     Text,
     ScrollView,
     ImageBackground,
-    FlatList,
-    TouchableOpacity,
-    Image
+    TouchableOpacity
 } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import {
-    Colors, HomepageContainer, Logo, LineHomePage
+    HomepageContainer
 } from '../components/styles'
 
 const Product = ({ navigation }) => {

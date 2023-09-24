@@ -13,8 +13,17 @@ import {
 } from '../components/styles'
 
 import { } from '../apis/index'
-import { Octicons, Ionicons, Entypo } from '@expo/vector-icons'
-const Payment = ({ navigation }) => {
+import {
+    Octicons,
+    EvilIcons,
+    Ionicons,
+    Entypo,
+    AntDesign,
+    MaterialCommunityIcons,
+    Feather,
+    MaterialIcons
+} from '@expo/vector-icons'
+const OrderDetail = ({ navigation }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [dataCart, setDataCart] = useState({
         "product": [
@@ -48,22 +57,52 @@ const Payment = ({ navigation }) => {
         <View style={{ flex: 1 }}>
             <ScrollView style={{ backgroundColor: 'black' }}>
                 <HomepageContainer>
-                    <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Payment</Text>
+                    <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Order Detail</Text>
                 </HomepageContainer>
-                <View style={[styles.information]}>
-                    <Ionicons name='location' style={{ color: 'red', paddingHorizontal: 10, fontSize: 24 }}></Ionicons>
-                    <TouchableOpacity onPress={() => {
-                        navigation.navigate('PaymentInformation')
-                    }} style={{ flexDirection: 'row' }}>
+                <View style={[styles.information, { backgroundColor: 'green', padding: 15, marginVertical: 10 }]}>
+                    <View style={{ flexDirection: 'row' }}>
                         <View style={{ flexDirection: 'column' }}>
-                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}>Địa chỉ nhận hàng</Text>
-                            <Text style={{ color: 'white', fontSize: 15 }}>Đồng Đức Lân | 0379382992</Text>
-                            <Text style={{ color: 'white', fontSize: 15 }}>Số 37, Ngõ 358 Bùi Xương Trạch</Text>
-                            <Text style={{ color: 'white', fontSize: 15 }}>Phường Khương Đình, quận thanh xuân, hà nội</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Đơn đã hoàn thành</Text>
+                            <Text style={{ color: 'white', fontSize: 15 }}>Cảm ơn đã sử dụng dịch vụ của chúng tôi</Text>
                         </View>
-
-                        <Ionicons name='chevron-forward' style={{ color: 'white', padding: 30, fontSize: 24 }}></Ionicons>
-                    </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={[styles.information, { paddingHorizontal: 10, marginBottom: 10 }]}>
+                    <Text style={{ color: 'white', fontSize: 18, paddingVertical: 5, fontWeight: 'bold' }}>ID:</Text>
+                    <Text style={{ color: 'white', fontSize: 18, padding: 5, fontWeight: 'bold' }}>1239014csafjj123adsf123</Text>
+                </View>
+                <View style={[styles.information, { marginBottom: 10 }]}>
+                    <MaterialIcons name="payment" style={{ color: 'white', paddingHorizontal: 10, fontSize: 24 }} />
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'column' }}>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Payment method</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 2 }}>Thanh toán khi nhận hàng</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={[styles.information, { marginBottom: 10 }]}>
+                    <Ionicons name='location-outline' style={{ color: 'red', paddingHorizontal: 10, fontSize: 24 }}></Ionicons>
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'column' }}>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Địa chỉ nhận hàng</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 2 }}>Đồng Đức Lân </Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 2 }}>0379382992</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingRight: 50 }}>Số 37, Ngõ 358 Bùi Xương Trạch Phường Khương Đình, quận thanh xuân, hà nội</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={[styles.information]}>
+                    <MaterialCommunityIcons name='truck-delivery-outline' style={{ color: 'white', paddingHorizontal: 10, fontSize: 24 }}></MaterialCommunityIcons>
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'column' }}>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Thông tin vận chuyển</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}><Entypo name="dot-single" size={16} color="white" /> 2023-09-14 16:30 - Delivery successful</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}><Entypo name="dot-single" size={16} color="white" /> 2023-09-14 16:30 - Being transported</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}><Entypo name="dot-single" size={16} color="white" /> 2023-09-14 16:30 - Delivered to the carrier</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}><Entypo name="dot-single" size={16} color="white" /> 2023-09-14 16:30 - Payment information confirmed</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}><Entypo name="dot-single" size={16} color="white" /> 2023-09-14 16:30 - Ordered</Text>
+                        </View>
+                    </View>
                 </View>
                 <LinePayment style={{ flexDirection: 'row' }} />
                 {dataCart.product.map((item, index) => (
@@ -88,12 +127,9 @@ const Payment = ({ navigation }) => {
                 <LinePayment style={{ flexDirection: 'row' }} />
                 <View style={[styles.information, { justifyContent: 'space-between', padding: 10 }]}>
                     <Entypo name='ticket' style={{ color: 'red', paddingHorizontal: 10, fontSize: 24 }}></Entypo>
-                    <TouchableOpacity onPress={() => {
-                        navigation.navigate('ApplyDiscount')
-                    }} style={{ flexDirection: 'row' }}>
+                    <View style={{ flexDirection: 'row' }}>
                         <Text style={{ color: 'red', fontSize: 15, paddingVertical: 5 }} >- 24,000 VNĐ</Text>
-                        <Ionicons name='chevron-forward' style={{ color: 'white', textAlign: 'right', fontSize: 24 }}></Ionicons>
-                    </TouchableOpacity>
+                    </View>
                 </View>
                 <LinePayment style={{ flexDirection: 'row' }} />
                 <View style={[styles.information, { justifyContent: 'space-between', padding: 10 }]}>
@@ -106,23 +142,11 @@ const Payment = ({ navigation }) => {
                     <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16 }}>Payment upon delivery</Text>
                 </View>
                 <LinePayment style={{ flexDirection: 'row' }} />
-                <View style={[styles.information, { justifyContent: 'space-between', padding: 10 }]}>
+                <View style={[styles.information, { justifyContent: 'space-between', padding: 10, paddingBottom: 100 }]}>
                     <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16 }}>Total </Text>
                     <Text style={{ color: 'red', paddingHorizontal: 10, fontSize: 16 }}>240,000,000 VNĐ</Text>
                 </View>
-                <LinePayment style={{ flexDirection: 'row' }} />
-                <View style={[styles.information, { justifyContent: 'space-between', padding: 10, paddingBottom: 100 }]}>
-                    <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16, fontWeight: 'bold' }}>You need to pay <Text style={{ color: 'red' }}>240,000,000 VND</Text> upon receiving the goods</Text>
-                </View>
             </ScrollView>
-            <TouchableOpacity
-                style={styles.buyButton}
-                onPress={() => {
-                    // navigation.navigate('Cart')
-                }}
-            >
-                <Text style={styles.buyButtonText}>Create Order</Text>
-            </TouchableOpacity>
         </View>
 
     );
@@ -204,4 +228,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Payment;
+export default OrderDetail;

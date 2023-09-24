@@ -1,14 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
-    View, Text, TouchableOpacity, StyleSheet,
-    ScrollView, Image,
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    Image,
 } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import {
-    HomepageContainer, Logo
+    HomepageContainer
 } from '../components/styles'
-
-import { fetchBestLaptop } from '../apis/index'
+import {
+    fetchBestLaptop
+} from '../apis/index'
 const Cart = ({ navigation }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [dataCart, setDataCart] = useState({
@@ -183,7 +187,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         padding: 25,
         justifyContent: 'center',
-        width:'40%'
+        width: '40%'
     },
     buyButtonText: {
         color: 'white',
@@ -197,7 +201,7 @@ const styles = StyleSheet.create({
     sum: {
         width: '70%',
         borderWidth: 1,
-        backgroundColor:'black',
+        backgroundColor: 'black',
         bottom: 90,
         color: 'white',
         fontSize: 16,

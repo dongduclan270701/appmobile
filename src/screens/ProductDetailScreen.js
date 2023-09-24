@@ -4,16 +4,13 @@ import {
     StyleSheet,
     Text,
     ScrollView,
-    ImageBackground,
-    FlatList,
     TouchableOpacity,
     Image,
     ActivityIndicator,
     Dimensions
 } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import {
-    Colors, HomepageContainer, Logo, LineHomePage, Loading
+    HomepageContainer,
 } from '../components/styles'
 import { fetchGoodsByName } from '../apis/index'
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -23,7 +20,6 @@ const ProductDetailScreen = ({ navigation, route }) => {
     const data = route.params
     const [product, setProduct] = useState()
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
     useEffect(() => {
         fetchGoodsByName(data.src, data.collection)
             .then(result => {
@@ -32,30 +28,26 @@ const ProductDetailScreen = ({ navigation, route }) => {
             .catch(error => {
                 console.log(error)
             })
-    }, [route]);
+    }, [route])
 
     const renderTextWithSpan = (text) => {
-        const splitText = text.split(/<br\s*\/?>/i); // tách chuỗi tại vị trí <br/> hoặc <br>
-
+        const splitText = text.split(/<br\s*\/?>/i)
         return splitText.map((textPart, index) => {
             if (index === splitText.length - 1) {
-                // nếu đây là phần tử cuối cùng thì trả về textPart không cần thêm <Text>
                 return textPart;
             }
-
-            // nếu không thì thêm <Text> để render
             return textPart + '\n'
-        });
+        })
     }
     const handleScroll = (event) => {
         const contentOffsetX = event.nativeEvent.contentOffset.x;
-        const imageIndex = Math.floor(contentOffsetX / 300); // Assuming each image has a fixed width of 200
+        const imageIndex = Math.floor(contentOffsetX / 300)
         setCurrentImageIndex(imageIndex);
-    };
+    }
     const sumStarProduct = () => {
         const sum = product && product.rating.reduce((accumulator, item) => {
             return accumulator + item.star;
-        }, 0);
+        }, 0)
         return sum
     }
     const renderStars = () => {
@@ -89,11 +81,23 @@ const ProductDetailScreen = ({ navigation, route }) => {
                             showsHorizontalScrollIndicator={false} // Hide scroll indicator
                         >
                             {product.img.map((imgUrl, index) => (
+
                                 <Image
                                     key={index}
                                     source={{ uri: imgUrl }}
                                     style={{ width: 400, height: 400, marginRight: 10 }}
                                 />
+                                //                                     <ImageModal
+                                //     resizeMode="contain"
+                                //     imageBackgroundColor="#000000"
+                                //     style={{
+                                //       width: 250,
+                                //       height: 250,
+                                //     }}
+                                //     source={{
+                                //       uri: 'https://cdn.pixabay.com/photo/2019/07/25/18/58/church-4363258_960_720.jpg',
+                                //     }}
+                                //   />
                             ))}
                         </ScrollView>
                         <Text style={{ color: 'white', textAlign: 'center' }}>
@@ -111,7 +115,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
                         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                             {renderStars()}
                         </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingBottom:20 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingBottom: 20 }}>
                             <Text style={{ fontSize: 15, color: 'white' }}>
                                 {product.rating.length} reviews - {product.sold} sold - {product.view} views
                             </Text>
@@ -199,7 +203,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: 'red',
         textAlign: 'center',
-        marginBottom:10,
+        marginBottom: 10,
         fontWeight: 'bold'
     },
     productRealPrice: {

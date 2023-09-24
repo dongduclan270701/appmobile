@@ -8,15 +8,17 @@ import {
     FlatList,
     TouchableOpacity,
     Image,
-    Dimensions,
     ActivityIndicator
 } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import {
-    Colors, HomepageContainer, Logo, LineHomePage
+    HomepageContainer,
+    Logo,
+    LineHomePage
 } from '../components/styles'
-import { fetchBestLaptop } from '../apis/index'
-const { width, height } = Dimensions.get('window');
+import {
+    fetchBestLaptop
+} from '../apis/index'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Homepage = ({ navigation, route }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [laptop, setLaptop] = useState(null)
@@ -25,7 +27,6 @@ const Homepage = ({ navigation, route }) => {
     const [pcCreator, setPcCreator] = useState(null)
     const [pcCompany, setPcCompany] = useState(null)
     const [apple, setApple] = useState(null)
-
     const data = route.params
     const data2 = [
         { id: '1', src: require('../../assets/banner-ads4.png') },
