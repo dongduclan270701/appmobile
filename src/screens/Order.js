@@ -23,107 +23,15 @@ import {
     Feather,
     MaterialIcons
 } from '@expo/vector-icons'
-import { } from '../apis/index'
-const Order = ({ navigation }) => {
-    const [dataCart, setDataCart] = useState({
-        "product": [
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-        ],
-    })
-    const [searchOrderId, setSearchOrderId] = useState(''); // Thêm state để lưu giá trị nhập từ người dùng
-
+const Order = ({ navigation, orderList, token }) => {
+    const formatter = new Intl.NumberFormat('en-US')
+    const [searchOrderId, setSearchOrderId] = useState('');
+    const [newOrderList, setNewOrderList] = useState(orderList.orders)
     const handleSearchOrder = () => {
-        // Xử lý tìm kiếm Order ID ở đây
-        const foundOrder = dataCart.product.find(order => order._id === searchOrderId);
-
-        if (foundOrder) {
-            // Hiển thị thông tin đơn hàng tìm thấy hoặc thực hiện hành động bạn muốn ở đây
-            Alert.alert('Order Found', `Order ID: ${foundOrder._id}\nProduct Name: ${foundOrder.nameProduct}`);
+        const foundOrders = orderList.orders.filter(order => order.orderId.includes(searchOrderId.toLowerCase()));
+        if (foundOrders.length > 0) {
+            setNewOrderList([...foundOrders])
         } else {
-            // Hiển thị thông báo nếu không tìm thấy Order ID
             Alert.alert('Order Not Found', `Order ID ${searchOrderId} was not found.`);
         }
     };
@@ -148,30 +56,36 @@ const Order = ({ navigation }) => {
                         <EvilIcons name='search' style={styles.searchButtonText} />
                     </TouchableOpacity>
                 </View>
-                {dataCart.product.map((item, index) => (
+                {newOrderList.map((item, index) => (
                     <TouchableOpacity onPress={() => {
-                        navigation.navigate('OrderDetail')
-                    }}>
+                        navigation.navigate('OrderDetail', { orderId: item.orderId, token: token })
+                    }} key={index}>
                         <View style={styles.cartItems} key={index}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10 }}>
-                                <Text style={{ color: 'white' }}>ID: <Text style={{ color: 'red' }}>123123123123123qưeqwe</Text></Text>
-                                <Text style={{ color: 'green' }}>Complete</Text>
+                                <Text style={{ color: 'white' }}>ID: <Text style={{ color: 'red' }}>{item.orderId}</Text></Text>
+                                {(item.status === 'Cancel' || item.status === 'Delivery failed') ?
+                                    <Text style={{ color: 'red' }}>Failed</Text>
+                                    : item.status === 'Ordered' ?
+                                        <Text style={{ color: 'yellow' }}>In process</Text>
+                                        :
+                                        <Text style={{ color: 'rgb(93, 93, 217)' }}>In process</Text>
+                                }
                             </View>
                             <View style={styles.cartItem}>
-                                <Image source={{ uri: item.img[0] }} style={styles.productImage} />
+                                <Image source={{ uri: item.product[0].img }} style={styles.productImage} />
                                 <View style={styles.productInfo}>
-                                    <Text style={styles.productName}>Giảm tối đa 300k123 13qưeqweqwe qweqwe 123123</Text>
-                                    <Text style={styles.productPrice}>24,000,000 VNĐ</Text>
+                                    <Text style={styles.productName}>{item.product[0].nameProduct}</Text>
+                                    <Text style={styles.productPrice}>{formatter.format(item.product[0].nowPrice)} VNĐ</Text>
                                 </View>
-                                <Text style={styles.removeButtonText}>x1</Text>
+                                <Text style={styles.removeButtonText}>x{item.product[0].quantity}</Text>
                             </View>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10, borderBottomWidth: 1, borderTopWidth: 1, borderColor: 'white' }}>
                                 <Text style={{ color: 'white', fontWeight: 'bold' }}>Total</Text>
-                                <Text style={{ color: 'red', fontWeight: 'bold' }}>24,000,000 VNĐ</Text>
+                                <Text style={{ color: 'red', fontWeight: 'bold' }}>{formatter.format(item.sumOrder + item.ship)} VNĐ</Text>
                             </View>
                             <View style={{ flexDirection: 'row', padding: 10, borderBottomWidth: 1, borderColor: 'white' }}>
                                 <MaterialCommunityIcons name='truck-delivery' style={{ color: 'white', paddingRight: 10, fontSize: 20 }}></MaterialCommunityIcons>
-                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Đơn hàng đã được giao thành công</Text>
+                                <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.status}</Text>
                             </View>
                         </View>
                         <View style={{ height: 10, width: '100%', backgroundColor: '#282828', marginBottom: 20 }} />

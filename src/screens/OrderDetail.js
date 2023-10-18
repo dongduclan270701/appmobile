@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,13 +6,17 @@ import {
     StyleSheet,
     ScrollView,
     Image,
+    ActivityIndicator,
+    Dimensions
 } from 'react-native';
 import {
     HomepageContainer,
     LinePayment
 } from '../components/styles'
 
-import { } from '../apis/index'
+import {
+    fetchOrderInformation
+} from '../apis/index'
 import {
     Octicons,
     EvilIcons,
@@ -23,53 +27,78 @@ import {
     Feather,
     MaterialIcons
 } from '@expo/vector-icons'
-const OrderDetail = ({ navigation }) => {
+const { width, height } = Dimensions.get('window');
+const OrderDetail = ({ navigation, route }) => {
     const formatter = new Intl.NumberFormat('en-US')
-    const [dataCart, setDataCart] = useState({
-        "product": [
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-        ],
-    })
+    const [dataCart, setDataCart] = useState(null)
+    useEffect(() => {
+        fetchOrderInformation(route.params.orderId, route.params.token)
+            .then(result => {
+                // setOrder(result)
+                setDataCart(result)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }, [route.params]);
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView style={{ backgroundColor: 'black' }}>
+            {dataCart ? <><ScrollView style={{ backgroundColor: 'black' }}>
                 <HomepageContainer>
                     <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Order Detail</Text>
                 </HomepageContainer>
-                <View style={[styles.information, { backgroundColor: 'green', padding: 15, marginVertical: 10 }]}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={{ flexDirection: 'column' }}>
-                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Đơn đã hoàn thành</Text>
-                            <Text style={{ color: 'white', fontSize: 15 }}>Cảm ơn đã sử dụng dịch vụ của chúng tôi</Text>
+                {dataCart.status === 'Delivery successful' ?
+                    <View style={[styles.information, { backgroundColor: 'green', padding: 15, marginVertical: 10 }]}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flexDirection: 'column' }}>
+                                <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Order has been completed</Text>
+                                <Text style={{ color: 'white', fontSize: 15 }}>Thank you for using our service</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
+                    :
+                    dataCart.status === 'Cancel' ?
+                        <View style={[styles.information, { backgroundColor: 'red', padding: 15, marginVertical: 10 }]}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={{ flexDirection: 'column' }}>
+                                    <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Order has been cancelled</Text>
+                                    <Text style={{ color: 'white', fontSize: 15 }}>You have canceled this order (Your reason: {dataCart.reasonCancel})</Text>
+                                </View>
+                            </View>
+                        </View>
+                        :
+                        dataCart.status === 'Delivery failed' ?
+                            <View style={[styles.information, { backgroundColor: 'red', padding: 15, marginVertical: 10 }]}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flexDirection: 'column' }}>
+                                        <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Delivery failed</Text>
+                                        <Text style={{ color: 'white', fontSize: 15 }}>Reason: {dataCart.reasonCancel}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            :
+                            dataCart.status === 'Ordered' ? 
+                            <View style={[styles.information, { backgroundColor: 'rgb(156 142 30)', padding: 15, marginVertical: 10 }]}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flexDirection: 'column' }}>
+                                        <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Verifying the order</Text>
+                                        <Text style={{ color: 'white', fontSize: 15 }}>We have verified your order, please wait</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            :
+                            <View style={[styles.information, { backgroundColor: 'rgb(93, 93, 217)', padding: 15, marginVertical: 10 }]}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flexDirection: 'column' }}>
+                                        <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Order is being shipped</Text>
+                                        <Text style={{ color: 'white', fontSize: 15 }}>The order is being handed over to the carrier, please wait for delivery</Text>
+                                    </View>
+                                </View>
+                            </View>
+                }
                 <View style={[styles.information, { paddingHorizontal: 10, marginBottom: 10 }]}>
                     <Text style={{ color: 'white', fontSize: 18, paddingVertical: 5, fontWeight: 'bold' }}>ID:</Text>
-                    <Text style={{ color: 'white', fontSize: 18, padding: 5, fontWeight: 'bold' }}>1239014csafjj123adsf123</Text>
+                    <Text style={{ color: 'white', fontSize: 18, padding: 5, fontWeight: 'bold' }}>{dataCart.orderId}</Text>
                 </View>
                 <View style={[styles.information, { marginBottom: 10 }]}>
                     <MaterialIcons name="payment" style={{ color: 'white', paddingHorizontal: 10, fontSize: 24 }} />
@@ -81,13 +110,13 @@ const OrderDetail = ({ navigation }) => {
                     </View>
                 </View>
                 <View style={[styles.information, { marginBottom: 10 }]}>
-                    <Ionicons name='location-outline' style={{ color: 'red', paddingHorizontal: 10, fontSize: 24 }}></Ionicons>
+                    <Ionicons name='location-outline' style={{ color: 'white', paddingHorizontal: 10, fontSize: 24 }}></Ionicons>
                     <View style={{ flexDirection: 'row' }}>
                         <View style={{ flexDirection: 'column' }}>
                             <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Địa chỉ nhận hàng</Text>
-                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 2 }}>Đồng Đức Lân </Text>
-                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 2 }}>0379382992</Text>
-                            <Text style={{ color: 'white', fontSize: 15, paddingRight: 50 }}>Số 37, Ngõ 358 Bùi Xương Trạch Phường Khương Đình, quận thanh xuân, hà nội</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 2 }}>{dataCart.username}</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 2 }}>{dataCart.phoneNumber}</Text>
+                            <Text style={{ color: 'white', fontSize: 15, paddingRight: 50 }}>{dataCart.address + ' ' + dataCart.city + ' ' + dataCart.district + ' ' + dataCart.commune}</Text>
                         </View>
                     </View>
                 </View>
@@ -96,11 +125,9 @@ const OrderDetail = ({ navigation }) => {
                     <View style={{ flexDirection: 'row' }}>
                         <View style={{ flexDirection: 'column' }}>
                             <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5, fontWeight: 'bold' }}>Thông tin vận chuyển</Text>
-                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}><Entypo name="dot-single" size={16} color="white" /> 2023-09-14 16:30 - Delivery successful</Text>
-                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}><Entypo name="dot-single" size={16} color="white" /> 2023-09-14 16:30 - Being transported</Text>
-                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}><Entypo name="dot-single" size={16} color="white" /> 2023-09-14 16:30 - Delivered to the carrier</Text>
-                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}><Entypo name="dot-single" size={16} color="white" /> 2023-09-14 16:30 - Payment information confirmed</Text>
-                            <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}><Entypo name="dot-single" size={16} color="white" /> 2023-09-14 16:30 - Ordered</Text>
+                            {dataCart.shipping_process.map((item, index) => {
+                                return <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }} key={index}><Entypo name="dot-single" size={16} color="white" /> {item.date} {item.time} - {item.content}</Text>
+                            })}
                         </View>
                     </View>
                 </View>
@@ -122,15 +149,15 @@ const OrderDetail = ({ navigation }) => {
                 <LinePayment style={{ flexDirection: 'row' }} />
                 <View style={[styles.information, { justifyContent: 'space-between', padding: 10 }]}>
                     <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16 }}>Total amount ( 3 goods)</Text>
-                    <Text style={{ color: 'red', paddingHorizontal: 10, fontSize: 16 }}>240,000,000 VNĐ</Text>
+                    <Text style={{ color: 'red', paddingHorizontal: 10, fontSize: 16 }}>{formatter.format(dataCart.sumOrder)} VNĐ</Text>
                 </View>
-                <LinePayment style={{ flexDirection: 'row' }} />
+                {/* <LinePayment style={{ flexDirection: 'row' }} />
                 <View style={[styles.information, { justifyContent: 'space-between', padding: 10 }]}>
                     <Entypo name='ticket' style={{ color: 'red', paddingHorizontal: 10, fontSize: 24 }}></Entypo>
                     <View style={{ flexDirection: 'row' }}>
                         <Text style={{ color: 'red', fontSize: 15, paddingVertical: 5 }} >- 24,000 VNĐ</Text>
                     </View>
-                </View>
+                </View> */}
                 <LinePayment style={{ flexDirection: 'row' }} />
                 <View style={[styles.information, { justifyContent: 'space-between', padding: 10 }]}>
                     <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16 }}>Ship fee</Text>
@@ -144,15 +171,50 @@ const OrderDetail = ({ navigation }) => {
                 <LinePayment style={{ flexDirection: 'row' }} />
                 <View style={[styles.information, { justifyContent: 'space-between', padding: 10, paddingBottom: 100 }]}>
                     <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16 }}>Total </Text>
-                    <Text style={{ color: 'red', paddingHorizontal: 10, fontSize: 16 }}>240,000,000 VNĐ</Text>
+                    <Text style={{ color: 'red', paddingHorizontal: 10, fontSize: 16 }}>{formatter.format(dataCart.sumOrder + 30000)} VNĐ</Text>
                 </View>
             </ScrollView>
+                {dataCart.status === 'Ordered' &&
+                    <TouchableOpacity
+                        style={styles.buyButton}
+                        onPress={() => {
+                            // navigation.navigate('Cart')
+                            // handleCreateOrder()
+                        }}
+                    >
+                        <Text style={styles.buyButtonText}>Cancel order</Text>
+                    </TouchableOpacity>}
+                {dataCart.status === 'Delivery successful' &&
+                    <TouchableOpacity
+                        style={styles.buyButton}
+                        onPress={() => {
+                            // navigation.navigate('Cart')
+                            // handleCreateOrder()
+                        }}
+                    >
+                        <Text style={styles.buyButtonText}>Review</Text>
+                    </TouchableOpacity>}
+            </>
+                :
+                <View style={[styles.loading, { width, height }]}>
+                    <ActivityIndicator size='large' color='white' />
+                </View>
+            }
+
         </View>
 
     );
 }
 
 const styles = StyleSheet.create({
+    loading: {
+        flex: 1,
+        backgroundColor: 'black',
+        paddingHorizontal: 16,
+        paddingTop: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     information: {
         flexDirection: 'row',
     },

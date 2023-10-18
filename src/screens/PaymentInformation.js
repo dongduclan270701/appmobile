@@ -5,12 +5,13 @@ import {
     TouchableOpacity,
     StyleSheet,
     ScrollView,
-    TextInput
+    TextInput,
+    Alert
 } from 'react-native';
 import axios from 'axios';
 import { Formik } from 'formik';
 import { Picker } from '@react-native-picker/picker';
-const Payment = ({ navigation }) => {
+const Payment = ({ navigation, route }) => {
     const [values, setValues] = useState({ username: '', phoneNumber: '', address: '', city: '', district: '', commune: '' })
     const [cityData, setCityData] = useState([]);
     const [districtData, setDistrictData] = useState([]);
@@ -18,8 +19,12 @@ const Payment = ({ navigation }) => {
     const [showCityPicker, setShowCityPicker] = useState(false);
     const [showDistrictPicker, setShowDistrictPicker] = useState(false);
     const [showCommunePicker, setShowCommunePicker] = useState(false);
-    const handleChange = () => {
-
+    const handleChange = (field, data) => {
+        setValues(pre => ({
+            ...pre,
+            [field]: data
+        })
+        )
     }
     const handleBlur = () => {
 
@@ -36,7 +41,8 @@ const Payment = ({ navigation }) => {
             }
         }
         getCity()
-    }, []);
+        setValues(route.params.orderCheckOut)
+    }, [route.params.orderCheckOut]);
 
 
     const handleChooseCity = (data) => {
@@ -64,6 +70,26 @@ const Payment = ({ navigation }) => {
         setShowCommunePicker(false);
     };
 
+    const handleSaveInformation = () => {
+        if (values.username === '') {
+            Alert.alert('Missing', `Fill your username`);
+        } else if (values.phoneNumber.length === 0) {
+            Alert.alert('Missing', `Fill your phone number`);
+        } else if (values.phoneNumber.length !== 10) {
+            Alert.alert('Missing', `Your phone number incorrect format`);
+        } else if (values.address === '') {
+            Alert.alert('Missing', `Fill your address`);
+        } else if (values.city === '') {
+            Alert.alert('Missing', `Fill your city`);
+        } else if (values.district === '') {
+            Alert.alert('Missing', `Fill your district`);
+        } else if (values.commune === '') {
+            Alert.alert('Missing', `Fill your commune`);
+        } else {
+            route.params.handleChangeInformation(values)
+            navigation.goBack()
+        }
+    }
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={{ backgroundColor: 'black' }}>
@@ -77,7 +103,7 @@ const Payment = ({ navigation }) => {
                             placeholder='Full name'
                             placeholderTextColor="gray"
                             onChangeText={
-                                handleChange('username')
+                                (text) => handleChange('username', text)
                             }
                             onBlur={handleBlur('username')}
                             value={values.username}
@@ -86,7 +112,7 @@ const Payment = ({ navigation }) => {
                             placeholder='Phone number'
                             placeholderTextColor="gray"
                             onChangeText={
-                                handleChange('phoneNumber')
+                                (text) => handleChange('phoneNumber', text)
                             }
                             onBlur={handleBlur('phoneNumber')}
                             value={values.phoneNumber}
@@ -96,7 +122,7 @@ const Payment = ({ navigation }) => {
                             placeholder='Address'
                             placeholderTextColor="gray"
                             onChangeText={
-                                handleChange('address')
+                                (text) => { handleChange('address', text) }
                             }
                             onBlur={handleBlur('address')}
                             value={values.address}
@@ -112,9 +138,11 @@ const Payment = ({ navigation }) => {
                             <Picker
                                 itemStyle={{ color: 'white', padding: 0, margin: 0 }}
                                 selectedValue={values.city}
-                                onValueChange={(itemValue) => {
-                                    handleChooseCity(itemValue);
-                                }}
+                                onValueChange={
+                                    (text) => {
+                                        handleChooseCity(text)
+                                    }
+                                }
                             >
                                 <Picker.Item label='Select City' value='' />
                                 {cityData.map((item, index) => {
@@ -134,9 +162,11 @@ const Payment = ({ navigation }) => {
                             <Picker
                                 itemStyle={{ color: 'white', padding: 0, margin: 0 }}
                                 selectedValue={values.district}
-                                onValueChange={(itemValue) => {
-                                    handleChooseDistrict(itemValue);
-                                }}
+                                onValueChange={
+                                    (text) => {
+                                        handleChooseDistrict(text)
+                                    }
+                                }
                             >
                                 <Picker.Item label='Select District' value='' />
                                 {districtData.map((item, index) => {
@@ -156,9 +186,11 @@ const Payment = ({ navigation }) => {
                             <Picker
                                 itemStyle={{ color: 'white', paddingBottom: 100, margin: 0 }}
                                 selectedValue={values.commune}
-                                onValueChange={(itemValue) => {
-                                    handleChooseCommune(itemValue);
-                                }}
+                                onValueChange={
+                                    (text) => {
+                                        handleChooseCommune(text)
+                                    }
+                                }
                             >
                                 <Picker.Item label='Select Commune' value='' />
                                 {communeData.map((item, index) => {
@@ -173,7 +205,7 @@ const Payment = ({ navigation }) => {
             <TouchableOpacity
                 style={styles.buyButton}
                 onPress={() => {
-                    navigation.goBack()
+                    handleSaveInformation()
                 }}
             >
                 <Text style={styles.buyButtonText}>Save</Text>

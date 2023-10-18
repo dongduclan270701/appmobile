@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -11,47 +11,65 @@ import {
     HomepageContainer
 } from '../components/styles'
 import {
-    fetchBestLaptop
+    fetchBestLaptop,
+    updateCart
 } from '../apis/index'
-const Cart = ({ navigation }) => {
+const Cart = ({ navigation, lengthCart, handleChangeLengthCart, userInformation, token }) => {
     const formatter = new Intl.NumberFormat('en-US')
-    const [dataCart, setDataCart] = useState({
-        "product": [
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-        ],
-    })
+    // const [dataCart, setDataCart] = useState({
+    //     "product": [
+    //         {
+    //             "_id": "650afa0a82ae198eca8a6a0c",
+    //             "img": [
+    //                 "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
+    //                 "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
+    //             ],
+    //             quantity: 1,
+    //             "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
+    //             "realPrice": 18999000,
+    //             "nowPrice": 17190000,
+    //             "collection": "laptop",
+    //         },
+    //         {
+    //             "_id": "650afa0a82ae198eca8a6a0c",
+    //             "img": [
+    //                 "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
+    //                 "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
+    //             ],
+    //             quantity: 1,
+    //             "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
+    //             "realPrice": 18999000,
+    //             "nowPrice": 17190000,
+    //             "collection": "laptop",
+    //         },
+    //     ],
+    // })
+    const [dataCart, setDataCart] = useState([])
+    useEffect(() => {
+        setDataCart(lengthCart)
+    }, [lengthCart]);
+    const total = dataCart.reduce((accumulator, currentItem) => {
+        const productTotal = currentItem.nowPrice * currentItem.quantity;
+        return accumulator + productTotal;
+    }, 0);
     const handleQuantityChange = (index, newQuantity) => {
-        const updatedDataCart = { ...dataCart }
-        updatedDataCart.product[index].quantity = newQuantity
-        setDataCart(updatedDataCart);
+        if (newQuantity > 0) {
+            const updatedDataCart = [...dataCart]
+            updatedDataCart[index].quantity = newQuantity
+            updateCart(userInformation.email, updatedDataCart, token)
+                .then(result => {
+                    setDataCart(updatedDataCart);
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
     };
     const handleRemoveItem = (index) => {
-        const updatedDataCart = { ...dataCart }
-        updatedDataCart.product.splice(index, 1)
+        const updatedDataCart = [...dataCart]
+        updatedDataCart.splice(index, 1)
         setDataCart(updatedDataCart)
+        handleChangeLengthCart(updatedDataCart)
     };
     return (
         <View style={{ flex: 1 }}>
@@ -59,7 +77,7 @@ const Cart = ({ navigation }) => {
                 <HomepageContainer>
                     <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Cart</Text>
                 </HomepageContainer>
-                {dataCart.product.map((item, index) => (
+                {dataCart.map((item, index) => (
                     <ScrollView horizontal={true} style={styles.cartItems} key={index}>
                         <View style={styles.cartItem}>
                             <Image source={{ uri: item.img[0] }} style={styles.productImage} />
@@ -90,11 +108,11 @@ const Cart = ({ navigation }) => {
                 ))}
             </ScrollView>
             <View style={styles.totalContainer}>
-                <Text style={styles.sum}>Sum: <Text style={{ color: 'red' }}>230,123,123 VNĐ</Text></Text>
+                <Text style={styles.sum}>Sum: <Text style={{ color: 'red' }}>{formatter.format(total)} VNĐ</Text></Text>
                 <TouchableOpacity
                     style={styles.buyButton}
                     onPress={() => {
-                        navigation.navigate('Payment')
+                        if (dataCart.length > 0) navigation.navigate('Payment')
                     }}
                 >
                     {/*  */}

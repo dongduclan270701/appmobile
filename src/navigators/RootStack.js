@@ -23,13 +23,24 @@ import OrderDetail from '../screens/OrderDetail'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
     fetchCartUser,
-    fetchSyncUser
+    fetchSyncUser,
+    fetchUserOrderDetails
 } from '../apis/index'
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeDrawer = (props) => {
-    const { cartData, token, userInformation, handleSetLogged } = props
+    const { cartData, token, userInformation, handleSetLogged, handleChangeDataCart } = props
+    const [lengthCart, setLengthCart] = useState([])
+    useEffect(() => {
+        setLengthCart(cartData)
+    }, [cartData]);
+
+    const handleChangeLengthCart = (data) => {
+        setLengthCart(data)
+        handleChangeDataCart(data)
+    }
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -66,9 +77,9 @@ const HomeDrawer = (props) => {
                 tabBarIcon: ({ color }) => (
                     <Ionicons name="cart" color={color} size={26} />
                 ),
-                tabBarBadge: cartData.length
+                tabBarBadge: lengthCart.length
             }} >
-                {({ navigation, route }) => <Cart token={token} userInformation={userInformation} navigation={navigation} route={route} />}
+                {({ navigation, route }) => <Cart token={token} lengthCart={lengthCart} handleChangeLengthCart={handleChangeLengthCart} userInformation={userInformation} navigation={navigation} route={route} />}
             </Tab.Screen>
             < Tab.Screen name="User" options={{
                 tabBarLabel: 'User',
@@ -87,6 +98,7 @@ const RootStack = ({ navigation }) => {
     const [cartData, setCartData] = useState([]);
     const [token, setToken] = useState(null)
     const [userInformation, setUserInformation] = useState(null)
+    const [orderList, setOrderList] = useState([])
     const handleSetLogged = (data) => {
         if (data.token !== null & data.user !== null) {
             setToken(data.token)
@@ -94,6 +106,13 @@ const RootStack = ({ navigation }) => {
             fetchCartUser(data.user[0], data.token)
                 .then(result => {
                     setCartData(result.product)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            fetchUserOrderDetails(data.user[0], data.token)
+                .then(result => {
+                    setOrderList(result)
                 })
                 .catch(error => {
                     console.log(error)
@@ -108,6 +127,9 @@ const RootStack = ({ navigation }) => {
     }
     const handleChangeInformation = (data) => {
         setUserInformation(data)
+    }
+    const handleChangeDataCart = (data) => {
+        setCartData(data)
     }
     useEffect(() => {
         const getData = async () => {
@@ -126,6 +148,13 @@ const RootStack = ({ navigation }) => {
                 fetchCartUser(JSON.parse(userInf)[0], token)
                     .then(result => {
                         setCartData(result.product)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                fetchUserOrderDetails(JSON.parse(userInf)[0], token)
+                    .then(result => {
+                        setOrderList(result)
                     })
                     .catch(error => {
                         console.log(error)
@@ -158,11 +187,13 @@ const RootStack = ({ navigation }) => {
                 </Stack.Screen>
                 <Stack.Screen name='Signup' component={Signup} />
                 <Stack.Screen name='HomeDrawer' options={{ headerShown: false }}>
-                    {() => <HomeDrawer cartData={cartData} token={token} userInformation={userInformation} handleSetLogged={handleSetLogged} />}
+                    {() => <HomeDrawer cartData={cartData} token={token} userInformation={userInformation} handleSetLogged={handleSetLogged} handleChangeDataCart={handleChangeDataCart} />}
                 </Stack.Screen>
                 <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
                 <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} />
-                <Stack.Screen name="Payment" component={Payment} />
+                <Stack.Screen name="Payment" >
+                    {({ navigation }) => <Payment cartData={cartData} handleChangeDataCart={handleChangeDataCart} token={token} userInformation={userInformation} navigation={navigation} />}
+                </Stack.Screen>
                 <Stack.Screen name="PaymentInformation" component={PaymentInformation} />
                 <Stack.Screen name="ApplyDiscount" component={ApplyDiscount} />
                 <Stack.Screen name="AccountSecurity" >
@@ -171,8 +202,12 @@ const RootStack = ({ navigation }) => {
                 <Stack.Screen name="ChangeInformationAccount" >
                     {({ navigation }) => <ChangeInformationAccount userInformation={userInformation} token={token} handleChangeInformation={handleChangeInformation} navigation={navigation} />}
                 </Stack.Screen>
-                <Stack.Screen name="ChangePassword" component={ChangePassword} />
-                <Stack.Screen name="Order" component={Order} />
+                <Stack.Screen name="ChangePassword" >
+                    {({ navigation }) => <ChangePassword userInformation={userInformation} token={token} navigation={navigation} />}
+                </Stack.Screen>
+                <Stack.Screen name="Order" >
+                    {({ navigation }) => <Order orderList={orderList} token={token} navigation={navigation} />}
+                </Stack.Screen>
                 <Stack.Screen name="OrderDetail" component={OrderDetail} />
             </Stack.Navigator>
         </NavigationContainer>

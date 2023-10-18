@@ -6,31 +6,48 @@ import {
     StyleSheet,
     ScrollView,
     TextInput,
-    Image
+    Image,
+    Alert,
+    ActivityIndicator
 } from 'react-native';
-import { Formik } from 'formik';
-import { Picker } from '@react-native-picker/picker';
-const ChangePassword = ({ navigation }) => {
-    const [values, setValues] = useState({ username: '', phoneNumber: '', address: '', sex: '', age: '' })
-    const [showSex, setShowSex] = useState(false)
-    const [showAge, setShowAge] = useState(false)
-    const handleChange = () => {
-
+import {
+    updatePasswordUser
+} from '../apis/index'
+const ChangePassword = ({ navigation, userInformation, token }) => {
+    const [values, setValues] = useState({ oldPassword: '', newPassword: '', reNewPassword: '' })
+    const [isLoading, setIsLoading] = useState(false)
+    const handleChange = (field, text) => {
+        setValues((prevValues) => ({
+            ...prevValues,
+            [field]: text,
+        }));
     }
-    const handleBlur = () => {
-
-    }
-    const handleChooseSex = (data) => {
-        setValues({ ...values, sex: data });
-        setShowSex(false)
-    }
-    const handleChooseAge = (data) => {
-        setValues({ ...values, age: data });
-        setShowAge(false)
-    }
-    const ageList = [];
-    for (let i = 1; i <= 100; i++) {
-        ageList.push(i.toString());
+    const handleSubmitChangePassword = () => {
+        const re = /[A-Z]/
+        if (values.oldPassword === '') {
+            Alert.alert('Missing', `You need to fill your password `);
+        } else if (values.newPassword === '') {
+            Alert.alert('Missing', `You need to fill your new password`);
+        } else if (values.reNewPassword === '') {
+            Alert.alert('Missing', `You need to fill your renew password`);
+        } else if (values.reNewPassword !== values.newPassword) {
+            Alert.alert('Incorrect', `Your renew password incorrect`);
+        } else if (values.newPassword.length < 8 || !re.test(values.newPassword)) {
+            Alert.alert('Incorrect', `New password must be at least 8 characters or more and contain capital letters!`);
+        } else {
+            updatePasswordUser(userInformation._id, {...userInformation, oldPassword: values.oldPassword, newPassword: values.newPassword}, token)
+                .then(result => {
+                    if(result === 'Password incorrect'){
+                        Alert.alert('Incorrect', `Your password incorrect`);
+                    } else {
+                        navigation.goBack()
+                    }
+                    
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
     }
     return (
         <View style={{ flex: 1 }}>
@@ -38,51 +55,51 @@ const ChangePassword = ({ navigation }) => {
                 <View style={styles.homeContainer}>
                     <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Change password</Text>
                 </View>
-                
+
                 <View style={[styles.information]}>
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.label}>Password</Text>
                         <MyTextInput
                             placeholder='Password'
                             placeholderTextColor="gray"
-                            onChangeText={
-                                handleChange('username')
-                            }
-                            onBlur={handleBlur('username')}
+                            onChangeText={(text) => handleChange('oldPassword', text)}
                             value={values.username}
+                            secureTextEntry={true}
                         />
                         <Text style={styles.label}>New password</Text>
                         <MyTextInput
                             placeholder='New password'
                             placeholderTextColor="gray"
-                            onChangeText={
-                                handleChange('phoneNumber')
-                            }
-                            onBlur={handleBlur('phoneNumber')}
-                            value={values.phoneNumber}
+                            onChangeText={(text) => handleChange('newPassword', text)}
+                            value={values.username}
+                            secureTextEntry={true}
                         />
                         <Text style={styles.label}>Renew password</Text>
                         <MyTextInput
                             placeholder='Renew password'
                             placeholderTextColor="gray"
-                            onChangeText={
-                                handleChange('address')
-                            }
-                            onBlur={handleBlur('address')}
-                            value={values.address}
+                            onChangeText={(text) => handleChange('reNewPassword', text)}
+                            value={values.username}
+                            secureTextEntry={true}
                         />
                         <View style={{ paddingBottom: 100 }} />
                     </View>
                 </View>
             </ScrollView>
-            <TouchableOpacity
-                style={styles.buyButton}
-                onPress={() => {
-                    navigation.goBack()
-                }}
-            >
-                <Text style={styles.buyButtonText}>Save</Text>
-            </TouchableOpacity>
+            {isLoading ?
+                <View style={styles.buyButton}>
+                    <ActivityIndicator size='large' color={'white'} />
+                </View>
+                :
+                <TouchableOpacity
+                    style={styles.buyButton}
+                    onPress={() => {
+                        handleSubmitChangePassword()
+                    }}
+                >
+                    <Text style={styles.buyButtonText}>Save</Text>
+                </TouchableOpacity>
+            }
         </View>
     );
 }
@@ -100,8 +117,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     email: {
-        padding:10,
-        fontWeight:'bold',
+        padding: 10,
+        fontWeight: 'bold',
         color: 'white',
         fontSize: 15,
     },

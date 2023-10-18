@@ -31,22 +31,19 @@ const Payment = ({ navigation, userInformation, handleChangeInformation, token }
     }
     const handleSubmitChangeInformation = () => {
         if (values.age === '') {
-            setIsLoading(false)
             Alert.alert('Missing', `You need to edit your age`);
         } else if (values.sex === '') {
-            setIsLoading(false)
             Alert.alert('Missing', `You need to edit your sex`);
         } else if (values.username === '') {
-            setIsLoading(false)
             Alert.alert('Missing', `You need to edit your username`);
         } else if (values.address === '') {
-            setIsLoading(false)
             Alert.alert('Missing', `You need to edit your address`);
         } else {
+            setIsLoading(true)
             updateUser(values._id, values, token)
                 .then(result => {
                     handleChangeInformation(result)
-                    setIsLoading(false)
+                    
                     navigation.goBack()
                 })
                 .catch(error => {
@@ -146,7 +143,6 @@ const Payment = ({ navigation, userInformation, handleChangeInformation, token }
                     style={styles.buyButton}
                     onPress={() => {
                         handleSubmitChangeInformation()
-                        setIsLoading(true)
                     }}
                 >
                     <Text style={styles.buyButtonText}>Save</Text>

@@ -65,13 +65,13 @@ const User = ({ navigation, token, userInformation, handleSetLogged }) => {
                 </View>
                 <Ionicons name='chevron-forward' style={{ color: 'white', fontSize: 24 }}></Ionicons>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.listItem}>
+            {/* <TouchableOpacity style={styles.listItem}>
                 <View style={{ flexDirection: 'row' }}>
                     <Entypo name='ticket' style={{ color: 'grey', paddingHorizontal: 10, fontSize: 24 }}></Entypo>
                     <Text style={styles.listItemText}>Voucher</Text>
                 </View>
                 <Ionicons name='chevron-forward' style={{ color: 'white', fontSize: 24 }}></Ionicons>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={styles.listItem} onPress={() => {
                 navigation.navigate('Order')
             }}>

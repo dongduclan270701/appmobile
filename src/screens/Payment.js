@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,44 +6,103 @@ import {
     StyleSheet,
     ScrollView,
     Image,
+    Alert
 } from 'react-native';
 import {
     HomepageContainer,
     LinePayment
 } from '../components/styles'
 
-import { } from '../apis/index'
+import { 
+    createOrderByCustomer,
+    updateCart
+} from '../apis/index'
 import { Octicons, Ionicons, Entypo } from '@expo/vector-icons'
-const Payment = ({ navigation }) => {
+const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart,token }) => {
     const formatter = new Intl.NumberFormat('en-US')
-    const [dataCart, setDataCart] = useState({
-        "product": [
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-            {
-                "_id": "650afa0a82ae198eca8a6a0c",
-                "img": [
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-                    "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-                ],
-                quantity: 1,
-                "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-                "realPrice": 18999000,
-                "nowPrice": 17190000,
-                "collection": "laptop",
-            },
-        ],
-    })
+    const [orderCheckOut, setOrderCheckOut] = useState({})
+    const [dataCart, setDataCart] = useState([])
+    useEffect(() => {
+        setDataCart(cartData)
+        setOrderCheckOut({
+            product: cartData,
+            email: userInformation.email,
+            username: userInformation.username,
+            phoneNumber: userInformation.phoneNumber,
+            address: userInformation.address,
+            city: "",
+            district: "",
+            commune: "",
+            discountCode: [],
+            shipping_process: [],
+            method_payment: "Thanh toán khi nhận hàng",
+            ship: 30000,
+            sumOrder: 0,
+            status: 'Ordered',
+        })
+    }, [cartData, userInformation])
+    const total = dataCart.reduce((accumulator, currentItem) => {
+        const productTotal = currentItem.nowPrice * currentItem.quantity
+        return accumulator + productTotal
+    }, 0)
+    const handleChangeInformation = (data) => {
+        setOrderCheckOut(data)
+    }
+    const handleCreateOrder = () => {
+        const date = new Date();
+        const minutes = date.getMinutes();
+        const hours = date.getHours();
+        const time = `${hours}:${minutes}`;
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        const today = `${year}-${month}-${day}`;
+        if (orderCheckOut.address === "") {
+            Alert.alert('Missing', `Fill your address`);
+        }
+        else if (orderCheckOut.phoneNumber === null) {
+            Alert.alert('Missing', `Fill your phoneNumber`);
+        }
+        else if (orderCheckOut.phoneNumber.length !== 10) {
+            Alert.alert('Missing', `Your phone number incorrect format`);
+        }
+        else if (orderCheckOut.city === "") {
+            Alert.alert('Missing', `Fill your city`);
+        }
+        else if (orderCheckOut.district === "") {
+            Alert.alert('Missing', `Fill your district`);
+        }
+        else if (orderCheckOut.commune === "") {
+            Alert.alert('Missing', `Fill your commune`);
+        }
+        else if (orderCheckOut.product === null || orderCheckOut.product.length < 1) {
+            Alert.alert('Missing', `You don't have product`);
+        }
+        else {
+            const newData = {
+                ...orderCheckOut,
+                shipping_process: [{ time: time, date: today, content: 'Ordered' }],
+                sumOrder: total + 30000,
+                createDate: today
+            }
+            
+            createOrderByCustomer(newData, token)
+                .then(result => {
+                    updateCart(userInformation.email, [], token)
+                        .then(result => {
+                            handleChangeDataCart([])
+                            Alert.alert('Successful', `Your order has been created`);
+                            navigation.navigate('Homepage')
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+    }
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={{ backgroundColor: 'black' }}>
@@ -53,22 +112,21 @@ const Payment = ({ navigation }) => {
                 <View style={[styles.information]}>
                     <Ionicons name='location' style={{ color: 'red', paddingHorizontal: 10, fontSize: 24 }}></Ionicons>
                     <TouchableOpacity onPress={() => {
-                        navigation.navigate('PaymentInformation')
+                        navigation.navigate('PaymentInformation', { orderCheckOut, handleChangeInformation })
                     }} style={{ flexDirection: 'row' }}>
                         <View style={{ flexDirection: 'column' }}>
                             <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}>Địa chỉ nhận hàng</Text>
-                            <Text style={{ color: 'white', fontSize: 15 }}>Đồng Đức Lân | 0379382992</Text>
-                            <Text style={{ color: 'white', fontSize: 15 }}>Số 37, Ngõ 358 Bùi Xương Trạch</Text>
-                            <Text style={{ color: 'white', fontSize: 15 }}>Phường Khương Đình, quận thanh xuân, hà nội</Text>
+                            <Text style={{ color: 'white', fontSize: 15 }}>{userInformation.username} | {userInformation.phoneNumber}</Text>
+                            <Text style={{ color: 'white', fontSize: 15 }}>{userInformation.address}</Text>
+                            <Text style={{ color: 'white', fontSize: 15 }}>{orderCheckOut.commune} {orderCheckOut.district} {orderCheckOut.city}</Text>
                         </View>
-
                         <Ionicons name='chevron-forward' style={{ color: 'white', padding: 30, fontSize: 24 }}></Ionicons>
                     </TouchableOpacity>
                 </View>
                 <LinePayment style={{ flexDirection: 'row' }} />
-                {dataCart.product.map((item, index) => (
-                    <ScrollView horizontal={true} style={styles.cartItems} key={index}>
-                        <View style={styles.cartItem}>
+                {dataCart.map((item, index) => (
+                    <View style={styles.cartItems}>
+                        <View style={styles.cartItem} key={index}>
                             <Image source={{ uri: item.img[0] }} style={styles.productImage} />
                             <View style={styles.productInfo}>
                                 <Text style={styles.productName}>{item.nameProduct}</Text>
@@ -78,14 +136,14 @@ const Payment = ({ navigation }) => {
                                 <Text style={styles.quantityText}>x {item.quantity}</Text>
                             </View>
                         </View>
-                    </ScrollView>
+                    </View>
                 ))}
                 <LinePayment style={{ flexDirection: 'row' }} />
                 <View style={[styles.information, { justifyContent: 'space-between', padding: 10 }]}>
                     <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16 }}>Total amount ( 3 goods)</Text>
-                    <Text style={{ color: 'red', paddingHorizontal: 10, fontSize: 16 }}>240,000,000 VNĐ</Text>
+                    <Text style={{ color: 'red', paddingHorizontal: 10, fontSize: 16 }}>{formatter.format(total)} VNĐ</Text>
                 </View>
-                <LinePayment style={{ flexDirection: 'row' }} />
+                {/* <LinePayment style={{ flexDirection: 'row' }} />
                 <View style={[styles.information, { justifyContent: 'space-between', padding: 10 }]}>
                     <Entypo name='ticket' style={{ color: 'red', paddingHorizontal: 10, fontSize: 24 }}></Entypo>
                     <TouchableOpacity onPress={() => {
@@ -94,7 +152,7 @@ const Payment = ({ navigation }) => {
                         <Text style={{ color: 'red', fontSize: 15, paddingVertical: 5 }} >- 24,000 VNĐ</Text>
                         <Ionicons name='chevron-forward' style={{ color: 'white', textAlign: 'right', fontSize: 24 }}></Ionicons>
                     </TouchableOpacity>
-                </View>
+                </View> */}
                 <LinePayment style={{ flexDirection: 'row' }} />
                 <View style={[styles.information, { justifyContent: 'space-between', padding: 10 }]}>
                     <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16 }}>Ship fee</Text>
@@ -108,17 +166,18 @@ const Payment = ({ navigation }) => {
                 <LinePayment style={{ flexDirection: 'row' }} />
                 <View style={[styles.information, { justifyContent: 'space-between', padding: 10 }]}>
                     <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16 }}>Total </Text>
-                    <Text style={{ color: 'red', paddingHorizontal: 10, fontSize: 16 }}>240,000,000 VNĐ</Text>
+                    <Text style={{ color: 'red', paddingHorizontal: 10, fontSize: 16 }}>{formatter.format(total + 30000)} VNĐ</Text>
                 </View>
                 <LinePayment style={{ flexDirection: 'row' }} />
                 <View style={[styles.information, { justifyContent: 'space-between', padding: 10, paddingBottom: 100 }]}>
-                    <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16, fontWeight: 'bold' }}>You need to pay <Text style={{ color: 'red' }}>240,000,000 VND</Text> upon receiving the goods</Text>
+                    <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16, fontWeight: 'bold' }}>You need to pay <Text style={{ color: 'red' }}>{formatter.format(total + 30000)} VND</Text> upon receiving the goods</Text>
                 </View>
             </ScrollView>
             <TouchableOpacity
                 style={styles.buyButton}
                 onPress={() => {
                     // navigation.navigate('Cart')
+                    handleCreateOrder()
                 }}
             >
                 <Text style={styles.buyButtonText}>Create Order</Text>
