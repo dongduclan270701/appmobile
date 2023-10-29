@@ -74,14 +74,14 @@ const Homepage = ({ navigation, route }) => {
                 <ImageBackground
                     source={require('../../assets/laptopGaming.jpg')}
                     style={styles.imageBackground1}
-                    borderRadius={20}
+                    borderRadius={15}
                 >
                     <Text style={styles.text1}>Laptop Gaming</Text>
                 </ImageBackground>
                 <ImageBackground
                     source={require('../../assets/laptop.jpg')}
                     style={styles.imageBackground2}
-                    borderRadius={20}
+                    borderRadius={15}
                 >
                     <Text style={styles.text2}>Laptop</Text>
                 </ImageBackground>
@@ -90,21 +90,21 @@ const Homepage = ({ navigation, route }) => {
                 <ImageBackground
                     source={require('../../assets/PC.jpg')}
                     style={styles.imageBackground3}
-                    borderRadius={20}
+                    borderRadius={15}
                 >
                     <Text style={styles.text2}>PC Creator</Text>
                 </ImageBackground>
                 <ImageBackground
                     source={require('../../assets/PC.jpg')}
                     style={styles.imageBackground4}
-                    borderRadius={20}
+                    borderRadius={15}
                 >
                     <Text style={styles.text3}>PC Company</Text>
                 </ImageBackground>
                 <ImageBackground
                     source={require('../../assets/PC.jpg')}
                     style={styles.imageBackground5}
-                    borderRadius={20}
+                    borderRadius={15}
                 >
                     <Text style={styles.text4}>PC Gaming</Text>
                 </ImageBackground>
@@ -113,7 +113,7 @@ const Homepage = ({ navigation, route }) => {
                 <ImageBackground
                     source={require('../../assets/Apple.png')}
                     style={styles.imageBackground6}
-                    borderRadius={20}
+                    borderRadius={15}
                 >
                     <Text style={styles.text5}>Apple</Text>
                 </ImageBackground>
@@ -173,7 +173,7 @@ const Homepage = ({ navigation, route }) => {
                     horizontal={true}
                     renderItem={({ item }) => (
                         <View style={styles.banner}>
-                            <Image source={item.src} style={{ width: '100%', height: '100%', borderRadius: 30 }} />
+                            <Image source={item.src} style={{ width: '100%', height: '100%', borderRadius: 15 }} />
                         </View>
                     )}
                 />
@@ -228,7 +228,7 @@ const Homepage = ({ navigation, route }) => {
                     horizontal={true}
                     renderItem={({ item }) => (
                         <View style={styles.banner}>
-                            <Image source={item.src} style={{ width: '100%', height: '100%', borderRadius: 30 }} />
+                            <Image source={item.src} style={{ width: '100%', height: '100%', borderRadius: 15 }} />
                         </View>
                     )}
                 />
@@ -283,7 +283,7 @@ const Homepage = ({ navigation, route }) => {
                     horizontal={true}
                     renderItem={({ item }) => (
                         <View style={styles.banner}>
-                            <Image source={item.src} style={{ width: '100%', height: '100%', borderRadius: 30 }} />
+                            <Image source={item.src} style={{ width: '100%', height: '100%', borderRadius: 15 }} />
                         </View>
                     )}
                 />
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#535353',
         margin: 8,
-        borderRadius: 30,
+        borderRadius: 15,
     },
     banner: {
         width: 400,
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#535353',
         margin: 8,
-        borderRadius: 30,
+        borderRadius: 15,
     },
     text: {
         justifyContent: 'center',

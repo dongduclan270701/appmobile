@@ -6,6 +6,7 @@ import {
     StyleSheet,
     ScrollView,
     Image,
+    Alert
 } from 'react-native';
 import {
     HomepageContainer
@@ -68,7 +69,14 @@ const Cart = ({ navigation, lengthCart, handleChangeLengthCart, userInformation,
     const handleRemoveItem = (index) => {
         const updatedDataCart = [...dataCart]
         updatedDataCart.splice(index, 1)
-        setDataCart(updatedDataCart)
+        updateCart(userInformation.email, updatedDataCart, token)
+            .then(result => {
+                setDataCart(updatedDataCart);
+                Alert.alert('Successful!', `Remove product successful`);
+            })
+            .catch(error => {
+                console.log(error)
+            })
         handleChangeLengthCart(updatedDataCart)
     };
     return (

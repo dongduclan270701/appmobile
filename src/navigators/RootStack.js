@@ -102,7 +102,7 @@ const RootStack = ({ navigation }) => {
     const handleSetLogged = (data) => {
         if (data.token !== null & data.user !== null) {
             setToken(data.token)
-            setUserInformation(data.user)
+            setUserInformation({image: data.user[4], address: data.user[3], phoneNumber: data.user[2], email: data.user[0], username: data.user[1]})
             fetchCartUser(data.user[0], data.token)
                 .then(result => {
                     setCartData(result.product)
@@ -137,7 +137,7 @@ const RootStack = ({ navigation }) => {
                 const token = await AsyncStorage.getItem('token');
                 setToken(token)
                 const userInf = await AsyncStorage.getItem('userInformation');
-                setUserInformation(JSON.parse(userInf))
+                // setUserInformation(JSON.parse(userInf))
                 fetchSyncUser(token)
                     .then(result => {
                         setUserInformation(result)
@@ -190,7 +190,9 @@ const RootStack = ({ navigation }) => {
                     {() => <HomeDrawer cartData={cartData} token={token} userInformation={userInformation} handleSetLogged={handleSetLogged} handleChangeDataCart={handleChangeDataCart} />}
                 </Stack.Screen>
                 <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
-                <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} />
+                <Stack.Screen name="ProductDetailScreen" >
+                    {({ navigation, route }) => <ProductDetailScreen handleChangeDataCart={handleChangeDataCart} cartData={cartData} token={token} userInformation={userInformation} navigation={navigation} route={route} />}
+                </Stack.Screen>
                 <Stack.Screen name="Payment" >
                     {({ navigation }) => <Payment cartData={cartData} handleChangeDataCart={handleChangeDataCart} token={token} userInformation={userInformation} navigation={navigation} />}
                 </Stack.Screen>

@@ -19,6 +19,7 @@ import {
     MaterialCommunityIcons
 } from '@expo/vector-icons'
 const User = ({ navigation, token, userInformation, handleSetLogged }) => {
+
     useEffect(() => {
         // const getData = async () => {
         //     try {
@@ -39,8 +40,8 @@ const User = ({ navigation, token, userInformation, handleSetLogged }) => {
                     <Text style={styles.name}>{userInformation.username}</Text>
                     <Text style={styles.email}>{userInformation.email}</Text>
                 </View>
-                <TouchableOpacity style={styles.logoutButton} onPress={() => { 
-                    handleSetLogged({token:null, user: null})
+                <TouchableOpacity style={styles.logoutButton} onPress={() => {
+                    handleSetLogged({ token: null, user: null })
                 }}>
                     <Text style={styles.logoutButtonText}>Logout</Text>
                 </TouchableOpacity>
@@ -54,8 +55,37 @@ const User = ({ navigation, token, userInformation, handleSetLogged }) => {
                     </TouchableOpacity>
                 </View>
             }
-
+            {/* <View style={[styles.information]}>
+                <TouchableOpacity style={styles.logoutButton} onPress={() => {
+                }}>
+                    <Text style={styles.logoutButtonText}>Processing</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={[styles.information]}>
+                <TouchableOpacity style={styles.logoutButton} onPress={() => {
+                }}>
+                    <Text style={styles.logoutButtonText}>Delivery</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={[styles.information]}>
+                <TouchableOpacity style={styles.logoutButton} onPress={() => {
+                }}>
+                    <Text style={styles.logoutButtonText}>Successful</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={[styles.information]}>
+                <TouchableOpacity style={styles.logoutButton} onPress={() => {
+                }}>
+                    <Text style={styles.logoutButtonText}>Cancel</Text>
+                </TouchableOpacity>
+            </View> */}
             {/* Danh sách các mục */}
+            <View style={{ flexDirection: 'column' }}>
+                <View>
+                    <Ionicons name='newspaper-outline' style={styles.process}></Ionicons>
+                    <Text style={styles.listItemText}>Processing</Text>
+                </View>
+            </View>
             <TouchableOpacity style={styles.listItem} onPress={() => {
                 navigation.navigate('AccountSecurity')
             }}>
@@ -94,11 +124,20 @@ const User = ({ navigation, token, userInformation, handleSetLogged }) => {
                 </View>
             </TouchableOpacity>
         </ScrollView>
-
     );
 }
 
 const styles = StyleSheet.create({
+    process: {
+        borderWidth: 1,
+        borderRadius: 50,
+        borderColor: 'grey',
+        color: 'grey',
+        padding: 10,
+        fontSize: 24,
+        width:'25%',
+        textAlign:'center',
+    },
     information: {
         flexDirection: 'column',
         justifyContent: 'center',

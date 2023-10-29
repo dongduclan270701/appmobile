@@ -125,8 +125,8 @@ const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart,t
                 </View>
                 <LinePayment style={{ flexDirection: 'row' }} />
                 {dataCart.map((item, index) => (
-                    <View style={styles.cartItems}>
-                        <View style={styles.cartItem} key={index}>
+                    <View style={styles.cartItems} key={index}>
+                        <View style={styles.cartItem}>
                             <Image source={{ uri: item.img[0] }} style={styles.productImage} />
                             <View style={styles.productInfo}>
                                 <Text style={styles.productName}>{item.nameProduct}</Text>

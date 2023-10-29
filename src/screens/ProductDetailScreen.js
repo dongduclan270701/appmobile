@@ -7,19 +7,21 @@ import {
     TouchableOpacity,
     Image,
     ActivityIndicator,
-    Dimensions
+    Dimensions,
+    Alert
 } from 'react-native';
 import {
     HomepageContainer,
 } from '../components/styles'
-import { fetchGoodsByName } from '../apis/index'
+import { fetchGoodsByName, updateCart } from '../apis/index'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 const { width, height } = Dimensions.get('window');
-const ProductDetailScreen = ({ navigation, route }) => {
+const ProductDetailScreen = ({ navigation, route, userInformation, cartData, token, handleChangeDataCart }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const data = route.params
-    const [product, setProduct] = useState()
+    const [product, setProduct] = useState(null)
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
     useEffect(() => {
         fetchGoodsByName(data.src, data.collection)
             .then(result => {
@@ -65,7 +67,35 @@ const ProductDetailScreen = ({ navigation, route }) => {
         }
         return stars;
     };
-
+    const handleToCart = () => {
+        if(userInformation) {
+            const quantity = 1
+            if (cartData.length !== 0) {
+                array = cartData
+            } else {
+                var array = [];
+            }
+            function isSame(productCompare) {
+                return productCompare.src === product.src;
+            }
+            const result = array.findIndex(isSame);
+            if (result !== -1) {
+                Alert.alert('Ops!!', `This product already exists in your cart`);
+            } else {
+                array.push({ ...product, quantity });
+                handleChangeDataCart(array)
+                updateCart(userInformation.email, array, token)
+                    .then(result => {
+                        navigation.navigate('Cart')
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            }
+        } else {
+            Alert.alert('Ops!!', `You need to login`);
+        }
+    }
     return (
         <View style={styles.container}>
             <ScrollView style={{ flex: 1 }}
@@ -76,12 +106,11 @@ const ProductDetailScreen = ({ navigation, route }) => {
                     <View style={{ padding: 10, paddingBottom: 150 }}>
                         <ScrollView
                             horizontal
-                            pagingEnabled // Enable paging to scroll image by image
-                            onScroll={handleScroll} // Call handleScroll when scrolling
-                            showsHorizontalScrollIndicator={false} // Hide scroll indicator
+                            pagingEnabled
+                            onScroll={handleScroll}
+                            showsHorizontalScrollIndicator={false}
                         >
                             {product.img.map((imgUrl, index) => (
-
                                 <Image
                                     key={index}
                                     source={{ uri: imgUrl }}
@@ -173,7 +202,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
             <TouchableOpacity
                 style={styles.buyButton}
                 onPress={() => {
-                    navigation.navigate('Cart')
+                    handleToCart()
                 }}
             >
                 <Text style={styles.buyButtonText}>Buy</Text>
@@ -284,7 +313,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         padding: 10,
         alignItems: 'center',
-        borderRadius: 30,
+        borderRadius: 15,
     },
     buyButtonText: {
         color: 'white',
