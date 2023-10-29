@@ -29,6 +29,7 @@ const Payment = ({ navigation, route }) => {
     const handleBlur = () => {
 
     }
+    
     useEffect(() => {
         const getCity = async () => {
             try {
@@ -42,8 +43,7 @@ const Payment = ({ navigation, route }) => {
         }
         getCity()
         setValues(route.params.orderCheckOut)
-    }, [route.params.orderCheckOut]);
-
+    }, [route.params]);
 
     const handleChooseCity = (data) => {
         setValues({ ...values, city: data, district: '', commune: '' });

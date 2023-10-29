@@ -55,36 +55,34 @@ const User = ({ navigation, token, userInformation, handleSetLogged }) => {
                     </TouchableOpacity>
                 </View>
             }
-            {/* <View style={[styles.information]}>
-                <TouchableOpacity style={styles.logoutButton} onPress={() => {
-                }}>
-                    <Text style={styles.logoutButtonText}>Processing</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 15, marginTop: 15 }}>
+                <TouchableOpacity>
+                    <View style={styles.column}>
+                        <Ionicons name='newspaper-outline' style={styles.process}></Ionicons>
+                        <Text style={[styles.listItemText, { textAlign: 'center' }]}>Processing</Text>
+                    </View>
                 </TouchableOpacity>
-            </View>
-            <View style={[styles.information]}>
-                <TouchableOpacity style={styles.logoutButton} onPress={() => {
-                }}>
-                    <Text style={styles.logoutButtonText}>Delivery</Text>
+                <View style={styles.space} />
+                <TouchableOpacity>
+                    <View style={styles.column}>
+                        <MaterialCommunityIcons name='truck-delivery-outline' style={styles.process}></MaterialCommunityIcons>
+                        <Text style={[styles.listItemText, { textAlign: 'center' }]}>Delivery</Text>
+                    </View>
                 </TouchableOpacity>
-            </View>
-            <View style={[styles.information]}>
-                <TouchableOpacity style={styles.logoutButton} onPress={() => {
-                }}>
-                    <Text style={styles.logoutButtonText}>Successful</Text>
+                <View style={styles.space} />
+                <TouchableOpacity>
+                    <View style={styles.column}>
+                        <MaterialCommunityIcons name='truck-check-outline' style={styles.process}></MaterialCommunityIcons>
+                        <Text style={[styles.listItemText, { textAlign: 'center' }]}>Successful</Text>
+                    </View>
                 </TouchableOpacity>
-            </View>
-            <View style={[styles.information]}>
-                <TouchableOpacity style={styles.logoutButton} onPress={() => {
-                }}>
-                    <Text style={styles.logoutButtonText}>Cancel</Text>
+                <View style={styles.space} />
+                <TouchableOpacity>
+                    <View style={styles.column}>
+                        <MaterialCommunityIcons name='cancel' style={styles.process}></MaterialCommunityIcons>
+                        <Text style={[styles.listItemText, { textAlign: 'center' }]}>Cancel</Text>
+                    </View>
                 </TouchableOpacity>
-            </View> */}
-            {/* Danh sách các mục */}
-            <View style={{ flexDirection: 'column' }}>
-                <View>
-                    <Ionicons name='newspaper-outline' style={styles.process}></Ionicons>
-                    <Text style={styles.listItemText}>Processing</Text>
-                </View>
             </View>
             <TouchableOpacity style={styles.listItem} onPress={() => {
                 navigation.navigate('AccountSecurity')
@@ -128,15 +126,18 @@ const User = ({ navigation, token, userInformation, handleSetLogged }) => {
 }
 
 const styles = StyleSheet.create({
+    column: {
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    space: {
+        width: 25,
+    },
     process: {
-        borderWidth: 1,
-        borderRadius: 50,
-        borderColor: 'grey',
         color: 'grey',
-        padding: 10,
+        padding: 15,
         fontSize: 24,
-        width:'25%',
-        textAlign:'center',
+        textAlign: 'center',
     },
     information: {
         flexDirection: 'column',
