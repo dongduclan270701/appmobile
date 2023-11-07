@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -14,19 +14,23 @@ import {
     LinePayment
 } from '../components/styles'
 import {
-    Octicons,
     EvilIcons,
-    Ionicons,
-    Entypo,
-    AntDesign,
     MaterialCommunityIcons,
-    Feather,
-    MaterialIcons
 } from '@expo/vector-icons'
-const Order = ({ navigation, orderList, token }) => {
+const Order = ({ navigation, orderList, token, stepDefault }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [searchOrderId, setSearchOrderId] = useState('');
-    const [newOrderList, setNewOrderList] = useState(orderList.orders)
+    const [newOrderList, setNewOrderList] = useState(null)
+    const [step, setStep] = useState(stepDefault)
+    const stepStatusMapping = [
+        ['Ordered', 'Payment information confirmed'],
+        ['Delivered to the carrier', 'Being transported'],
+        ['Delivery successful'],
+        ['Cancel', 'Delivery failed'],
+    ]
+    const handleOptionChange = (option) => {
+        setStep(option)
+    };
     const handleSearchOrder = () => {
         const foundOrders = orderList.orders.filter(order => order.orderId.includes(searchOrderId.toLowerCase()));
         if (foundOrders.length > 0) {
@@ -35,6 +39,10 @@ const Order = ({ navigation, orderList, token }) => {
             Alert.alert('Order Not Found', `Order ID ${searchOrderId} was not found.`);
         }
     };
+    useEffect(() => {
+        const filteredOrders = orderList.orders.filter(item => stepStatusMapping[step].includes(item.status));
+        setNewOrderList(filteredOrders)
+    }, [orderList, step]);
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={{ backgroundColor: 'black' }}>
@@ -56,20 +64,42 @@ const Order = ({ navigation, orderList, token }) => {
                         <EvilIcons name='search' style={styles.searchButtonText} />
                     </TouchableOpacity>
                 </View>
-                {newOrderList.map((item, index) => (
+                <View style={{ flexDirection: 'row', width: '100%', padding: 10, marginBottom: 10 }}>
+                    <TouchableOpacity
+                        style={[styles.processItem, step === 0 && styles.selectedProcessItem]}
+                        onPress={() => handleOptionChange(0)}
+                    >
+                        <Text style={[styles.processText, step === 0 && styles.selectedProcessText]}>Process</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.processItem, step === 1 && styles.selectedProcessItem]}
+                        onPress={() => handleOptionChange(1)}
+                    >
+                        <Text style={[styles.processText, step === 1 && styles.selectedProcessText]}>Delivery</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.processItem, step === 2 && styles.selectedProcessItem]}
+                        onPress={() => handleOptionChange(2)}
+                    >
+                        <Text style={[styles.processText, step === 2 && styles.selectedProcessText]}>Successful</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.processItem, step === 3 && styles.selectedProcessItem]}
+                        onPress={() => handleOptionChange(3)}
+                    >
+                        <Text style={[styles.processText, step === 3 && styles.selectedProcessText]}>Cancel</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {newOrderList && newOrderList.map((item, index) => (
                     <TouchableOpacity onPress={() => {
                         navigation.navigate('OrderDetail', { orderId: item.orderId, token: token })
                     }} key={index}>
                         <View style={styles.cartItems} key={index}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10 }}>
-                                <Text style={{ color: 'white' }}>ID: <Text style={{ color: 'red' }}>{item.orderId}</Text></Text>
-                                {(item.status === 'Cancel' || item.status === 'Delivery failed') ?
-                                    <Text style={{ color: 'red' }}>Failed</Text>
-                                    : item.status === 'Ordered' ?
-                                        <Text style={{ color: 'yellow' }}>In process</Text>
-                                        :
-                                        <Text style={{ color: 'rgb(93, 93, 217)' }}>In process</Text>
-                                }
+                                <Text style={{ color: 'white' }}>ID: <Text>{item.orderId}</Text></Text>
+                                <Text style={{ color: 'white' }}>{item.status}</Text>
                             </View>
                             <View style={styles.cartItem}>
                                 <Image source={{ uri: item.product[0].img }} style={styles.productImage} />
@@ -88,7 +118,7 @@ const Order = ({ navigation, orderList, token }) => {
                                 <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.status}</Text>
                             </View>
                         </View>
-                        <View style={{ height: 10, width: '100%', backgroundColor: '#282828', marginBottom: 20 }} />
+                        <View style={{ height: 5, width: '100%', backgroundColor: '#282828', marginBottom: 20 }} />
                     </TouchableOpacity>
                 ))}
             </ScrollView>
@@ -97,6 +127,22 @@ const Order = ({ navigation, orderList, token }) => {
 }
 
 const styles = StyleSheet.create({
+    processItem: {
+        flex: 1,
+        alignItems: 'center',
+        borderBottomWidth: 2,
+        borderBottomColor: 'transparent'
+    },
+    selectedProcessItem: {
+        paddingBottom: 10,
+        borderBottomColor: '#e33c4b'
+    },
+    processText: {
+        color: 'white'
+    },
+    selectedProcessText: {
+        color: '#e33c4b'
+    },
     searchInput: {
         borderWidth: 1,
         borderColor: 'grey',

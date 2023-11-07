@@ -11,7 +11,7 @@ import {
 import axios from 'axios';
 import { Formik } from 'formik';
 import { Picker } from '@react-native-picker/picker';
-const Payment = ({ navigation, route }) => {
+const PaymentInformation = ({ navigation, route }) => {
     const [values, setValues] = useState({ username: '', phoneNumber: '', address: '', city: '', district: '', commune: '' })
     const [cityData, setCityData] = useState([]);
     const [districtData, setDistrictData] = useState([]);
@@ -29,7 +29,7 @@ const Payment = ({ navigation, route }) => {
     const handleBlur = () => {
 
     }
-    
+
     useEffect(() => {
         const getCity = async () => {
             try {
@@ -43,7 +43,7 @@ const Payment = ({ navigation, route }) => {
         }
         getCity()
         setValues(route.params.orderCheckOut)
-    }, [route.params]);
+    }, [route]);
 
     const handleChooseCity = (data) => {
         setValues({ ...values, city: data, district: '', commune: '' });
@@ -277,4 +277,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Payment;
+export default PaymentInformation;

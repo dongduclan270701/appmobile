@@ -18,8 +18,9 @@ import {
 import {
     fetchBestLaptop
 } from '../apis/index'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const Homepage = ({ navigation, route }) => {
+const Homepage = ({ navigation, route, lengthCart }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [laptop, setLaptop] = useState(null)
     const [laptopGaming, setLaptopGaming] = useState(null)
@@ -62,12 +63,28 @@ const Homepage = ({ navigation, route }) => {
     return (
         <ScrollView style={{ backgroundColor: 'black' }}>
             <HomepageContainer>
-                <Logo />
                 <Logo source={require('../../assets/logo-brand1.png')} />
-                <TouchableOpacity onPress={() => {
+                {/* <TouchableOpacity onPress={() => {
                     navigation.navigate('Product')
                 }}>
                     <Logo source={require('../../assets/search.png')} style={{ width: 25, height: 25, tintColor: 'white', marginTop: 25 }} />
+                    <Ionicons name="cart" style={{ color: 'white', marginTop: 25 }} size={26} />
+                </TouchableOpacity> */}
+                <TouchableOpacity onPress={() => {
+                    navigation.navigate('Cart')
+                }}>
+                    {/* <View style={{ color: 'grey', marginTop: 25 }}>
+                        <Text style={{ color: 'white' }}>
+                            <Ionicons name="cart" style={{ color: 'grey' }} size={26} />{lengthCart.length}
+                        </Text>
+                    </View> */}
+                    <View style={styles.column}>
+                    <Ionicons name="cart" style={{ color: 'grey' }} size={26} />
+                        <Text style={[styles.listItemText, { textAlign: 'center' }]}>Successful</Text>
+                        <View style={styles.badge}>
+                            <Text style={styles.badgeText}>{lengthCart.length}</Text>
+                        </View>
+                    </View>
                 </TouchableOpacity>
             </HomepageContainer>
             <View style={styles.category}>
@@ -292,6 +309,32 @@ const Homepage = ({ navigation, route }) => {
     );
 }
 const styles = StyleSheet.create({
+    process: {
+        color: 'grey',
+        padding: 10,
+        fontSize: 24,
+        textAlign: 'center',
+    },
+    badge: {
+        backgroundColor: '#e33c4b',
+        borderRadius: 10,
+        width: 15,
+        height: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        right: 10,
+        top: 0,
+    },
+    badgeText: {
+        color: 'white',
+        fontSize: 12,
+    },
+    column: {
+        marginTop:25,
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
     container: {
         flex: 1,
         backgroundColor: 'black',

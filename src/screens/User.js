@@ -18,18 +18,28 @@ import {
     AntDesign,
     MaterialCommunityIcons
 } from '@expo/vector-icons'
-const User = ({ navigation, token, userInformation, handleSetLogged }) => {
-
+const User = ({ navigation, token, userInformation, handleSetLogged, orderList, handleChangeStepDefault }) => {
+    const [countOrder, setCountOrder] = useState({ processing: 0, delivery: 0, successful: 0, cancel: 0 })
+    const stepStatusMapping = {
+        processing: ['Ordered', 'Payment information confirmed'],
+        delivery: ['Delivered to the carrier', 'Being transported'],
+        successful: ['Delivery successful'],
+        cancel: ['Cancel', 'Delivery failed'],
+    }
     useEffect(() => {
-        // const getData = async () => {
-        //     try {
-        //         const value = await AsyncStorage.getItem('token');
-        //         return value
-        //     } catch (error) {
-        //     }
-        // };
-        // getData()
-    }, []);
+        if (orderList) {
+            const countOrders = orderList.orders.reduce((accumulator, order) => {
+                for (const type in stepStatusMapping) {
+                    if (stepStatusMapping[type].includes(order.status)) {
+                        accumulator[type] += 1
+                        break
+                    }
+                }
+                return accumulator;
+            }, { processing: 0, delivery: 0, successful: 0, cancel: 0 });
+            setCountOrder(countOrders);
+        }
+    }, [orderList]);
     return (
         <ScrollView style={{ backgroundColor: 'black' }}>
             <HomepageContainer>
@@ -56,31 +66,55 @@ const User = ({ navigation, token, userInformation, handleSetLogged }) => {
                 </View>
             }
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 15, marginTop: 15 }}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                handleChangeStepDefault(0)
+                navigation.navigate('Order')
+            }}>
                     <View style={styles.column}>
                         <Ionicons name='newspaper-outline' style={styles.process}></Ionicons>
                         <Text style={[styles.listItemText, { textAlign: 'center' }]}>Processing</Text>
+                        <View style={styles.badge}>
+                            <Text style={styles.badgeText}>{countOrder.processing}</Text>
+                        </View>
                     </View>
                 </TouchableOpacity>
                 <View style={styles.space} />
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                handleChangeStepDefault(1)
+                navigation.navigate('Order')
+            }}>
                     <View style={styles.column}>
                         <MaterialCommunityIcons name='truck-delivery-outline' style={styles.process}></MaterialCommunityIcons>
                         <Text style={[styles.listItemText, { textAlign: 'center' }]}>Delivery</Text>
+                        <View style={styles.badge}>
+                            <Text style={styles.badgeText}>{countOrder.delivery}</Text>
+                        </View>
                     </View>
                 </TouchableOpacity>
                 <View style={styles.space} />
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                handleChangeStepDefault(2)
+                navigation.navigate('Order')
+            }}>
                     <View style={styles.column}>
                         <MaterialCommunityIcons name='truck-check-outline' style={styles.process}></MaterialCommunityIcons>
                         <Text style={[styles.listItemText, { textAlign: 'center' }]}>Successful</Text>
+                        <View style={styles.badge}>
+                            <Text style={styles.badgeText}>{countOrder.successful}</Text>
+                        </View>
                     </View>
                 </TouchableOpacity>
                 <View style={styles.space} />
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                handleChangeStepDefault(3)
+                navigation.navigate('Order')
+            }}>
                     <View style={styles.column}>
                         <MaterialCommunityIcons name='cancel' style={styles.process}></MaterialCommunityIcons>
                         <Text style={[styles.listItemText, { textAlign: 'center' }]}>Cancel</Text>
+                        <View style={styles.badge}>
+                            <Text style={styles.badgeText}>{countOrder.cancel}</Text>
+                        </View>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -101,6 +135,7 @@ const User = ({ navigation, token, userInformation, handleSetLogged }) => {
                 <Ionicons name='chevron-forward' style={{ color: 'white', fontSize: 24 }}></Ionicons>
             </TouchableOpacity> */}
             <TouchableOpacity style={styles.listItem} onPress={() => {
+                handleChangeStepDefault(0)
                 navigation.navigate('Order')
             }}>
                 <View style={{ flexDirection: 'row' }}>
@@ -126,6 +161,21 @@ const User = ({ navigation, token, userInformation, handleSetLogged }) => {
 }
 
 const styles = StyleSheet.create({
+    badge: {
+        backgroundColor: '#e33c4b',
+        borderRadius: 10,
+        width: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        right: 0,
+        top: 0,
+    },
+    badgeText: {
+        color: 'white',
+        fontSize: 12,
+    },
     column: {
         flexDirection: 'column',
         alignItems: 'center',

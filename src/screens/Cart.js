@@ -15,7 +15,7 @@ import {
     fetchBestLaptop,
     updateCart
 } from '../apis/index'
-const Cart = ({ navigation, lengthCart, handleChangeLengthCart, userInformation, token }) => {
+const Cart = ({ navigation, cartData, handleChangeDataCart, userInformation, token }) => {
     const formatter = new Intl.NumberFormat('en-US')
     // const [dataCart, setDataCart] = useState({
     //     "product": [
@@ -47,8 +47,8 @@ const Cart = ({ navigation, lengthCart, handleChangeLengthCart, userInformation,
     // })
     const [dataCart, setDataCart] = useState([])
     useEffect(() => {
-        setDataCart(lengthCart)
-    }, [lengthCart]);
+        setDataCart(cartData)
+    }, [cartData]);
     const total = dataCart.reduce((accumulator, currentItem) => {
         const productTotal = currentItem.nowPrice * currentItem.quantity;
         return accumulator + productTotal;
@@ -77,11 +77,11 @@ const Cart = ({ navigation, lengthCart, handleChangeLengthCart, userInformation,
             .catch(error => {
                 console.log(error)
             })
-        handleChangeLengthCart(updatedDataCart)
+        handleChangeDataCart(updatedDataCart)
     };
     return (
-        <View style={{ flex: 1 }}>
-            <ScrollView style={{ backgroundColor: 'black' }}>
+        <View style={{ flex: 1, backgroundColor: 'black' }}>
+            <ScrollView >
                 <HomepageContainer>
                     <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Cart</Text>
                 </HomepageContainer>
@@ -123,7 +123,6 @@ const Cart = ({ navigation, lengthCart, handleChangeLengthCart, userInformation,
                         if (dataCart.length > 0) navigation.navigate('Payment')
                     }}
                 >
-                    {/*  */}
                     <Text style={styles.buyButtonText}>Payment</Text>
                 </TouchableOpacity>
             </View>
@@ -209,7 +208,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     buyButton: {
-        bottom: 90,
+        bottom: 60,
         backgroundColor: 'red',
         padding: 25,
         justifyContent: 'center',
@@ -228,9 +227,9 @@ const styles = StyleSheet.create({
         width: '70%',
         borderWidth: 1,
         backgroundColor: 'black',
-        bottom: 90,
         color: 'white',
         fontSize: 16,
+        bottom: 60,
         fontWeight: 'bold',
         padding: 25,
         justifyContent: 'center',
