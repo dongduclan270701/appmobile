@@ -98,11 +98,12 @@ const ProductDetailScreen = ({ navigation, route, userInformation, cartData, tok
     }
     return (
         <View style={styles.container}>
+            {product ? (<>
             <ScrollView style={{ flex: 1 }}
                 contentContainerStyle={styles.contentContainer}>
                 <HomepageContainer>
                 </HomepageContainer>
-                {product ? (
+                
                     <View style={{ padding: 10, paddingBottom: 150 }}>
                         <ScrollView
                             horizontal
@@ -191,13 +192,9 @@ const ProductDetailScreen = ({ navigation, route, userInformation, cartData, tok
                                 /> : null}
                             </View>
                         ))}
-
+                        <Text style={styles.sectionTitle}>Exchange:</Text>
                     </View>
-                ) : (
-                    <View style={[styles.loading, { width, height }]}>
-                        <ActivityIndicator size='large' color='white' />
-                    </View>
-                )}
+                
             </ScrollView>
             <TouchableOpacity
                 style={styles.buyButton}
@@ -207,6 +204,11 @@ const ProductDetailScreen = ({ navigation, route, userInformation, cartData, tok
             >
                 <Text style={styles.buyButtonText}>Buy</Text>
             </TouchableOpacity>
+            </>) : (
+                    <View style={[styles.loading, { width, height }]}>
+                        <ActivityIndicator size='large' color='white' />
+                    </View>
+                )}
         </View>
 
 

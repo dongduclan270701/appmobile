@@ -13,12 +13,13 @@ import {
     LinePayment
 } from '../components/styles'
 
-import { 
+import {
     createOrderByCustomer,
-    updateCart
+    updateCart,
+    createNoticeByCustomer
 } from '../apis/index'
 import { Octicons, Ionicons, Entypo } from '@expo/vector-icons'
-const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart,token }) => {
+const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart, token, handleChangeNotice, handleChangeOrderList }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [orderCheckOut, setOrderCheckOut] = useState({})
     const [dataCart, setDataCart] = useState([])
@@ -85,9 +86,35 @@ const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart,t
                 sumOrder: total + 30000,
                 createDate: today
             }
-            
             createOrderByCustomer(newData, token)
                 .then(result => {
+                    createNoticeByCustomer({
+                        product: result.product[0],
+                        email: result.email,
+                        time: time,
+                        date: today,
+                        content: 'Order placed successfully, please wait for order confirmation',
+                        status: result.status,
+                        orderId: result.orderId,
+                        createDate: today
+                    }, token)
+                        .then(result1 => {
+                            handleChangeNotice({
+                                product: result.product[0],
+                                email: result.email,
+                                time: time,
+                                date: today,
+                                content: 'Order placed successfully, please wait for order confirmation',
+                                status: result.status,
+                                orderId: result.orderId,
+                                isReadCus: false,
+                                createDate: today
+                            })
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                    handleChangeOrderList(result)
                     updateCart(userInformation.email, [], token)
                         .then(result => {
                             handleChangeDataCart([])

@@ -39,6 +39,7 @@ const User = ({ navigation, token, userInformation, handleSetLogged, orderList, 
             }, { processing: 0, delivery: 0, successful: 0, cancel: 0 });
             setCountOrder(countOrders);
         }
+        console.log(1)
     }, [orderList]);
     return (
         <ScrollView style={{ backgroundColor: 'black' }}>

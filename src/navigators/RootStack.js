@@ -32,7 +32,7 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeDrawer = (props) => {
-    const { cartData, token, userInformation, handleSetLogged, orderList, noticeList, handleChangeStepDefault } = props
+    const { cartData, token, userInformation, handleSetLogged, orderList, noticeList, handleChangeStepDefault, handleReadNotice } = props
     const [lengthCart, setLengthCart] = useState([])
     const [lengthNotice, setLengthNotice] = useState([])
     useEffect(() => {
@@ -77,7 +77,7 @@ const HomeDrawer = (props) => {
                 ),
                 tabBarBadge: lengthNotice ? lengthNotice.filter(item => item.isReadCus === false).length > 99 ? '99+' : lengthNotice.filter(item => item.isReadCus === false).length : 0
             }} >
-                {({ navigation, route }) => <Notification lengthNotice={lengthNotice} token={token} userInformation={userInformation} navigation={navigation} route={route} />}
+                {({ navigation, route }) => <Notification handleReadNotice={handleReadNotice} lengthNotice={lengthNotice} token={token} userInformation={userInformation} navigation={navigation} route={route} />}
             </Tab.Screen>
             < Tab.Screen name="User" options={{
                 tabBarLabel: 'User',
@@ -143,6 +143,23 @@ const RootStack = ({ navigation }) => {
     const handleChangeStepDefault = (data) => {
         setStepDefault(data)
     }
+    const handleReadNotice = (id) => {
+        const updatedArray = noticeList.map(item => {
+            if (item._id === id) {
+                return { ...item, isReadCus: true }
+            }
+            return item
+        });
+        setNoticeList(updatedArray)
+    }
+    const handleChangeNotice = (data) => {
+        setNoticeList([data, ...noticeList])
+    }
+    const handleChangeOrderList = (data) => {
+        const firstImg = data.product[0].img[0]
+        data.product[0].img = firstImg
+        orderList.orders.unshift(data)
+    }
     useEffect(() => {
         const getData = async () => {
             try {
@@ -206,7 +223,7 @@ const RootStack = ({ navigation }) => {
                 </Stack.Screen>
                 <Stack.Screen name='Signup' component={Signup} />
                 <Stack.Screen name='HomeDrawer' options={{ headerShown: false }}>
-                    {() => <HomeDrawer handleChangeStepDefault={handleChangeStepDefault} noticeList={noticeList} orderList={orderList} cartData={cartData} token={token} userInformation={userInformation} handleSetLogged={handleSetLogged} handleChangeDataCart={handleChangeDataCart} />}
+                    {() => <HomeDrawer handleChangeStepDefault={handleChangeStepDefault} handleReadNotice={handleReadNotice} noticeList={noticeList} orderList={orderList} cartData={cartData} token={token} userInformation={userInformation} handleSetLogged={handleSetLogged} handleChangeDataCart={handleChangeDataCart} />}
                 </Stack.Screen>
                 <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
                 <Stack.Screen name="ProductDetailScreen" >
@@ -216,7 +233,7 @@ const RootStack = ({ navigation }) => {
                     {({ navigation, route }) => <Cart handleChangeDataCart={handleChangeDataCart} cartData={cartData} token={token} userInformation={userInformation} navigation={navigation} route={route} />}
                 </Stack.Screen>
                 <Stack.Screen name="Payment" >
-                    {({ navigation }) => <Payment cartData={cartData} handleChangeDataCart={handleChangeDataCart} token={token} userInformation={userInformation} navigation={navigation} />}
+                    {({ navigation }) => <Payment handleChangeNotice={handleChangeNotice} handleChangeOrderList={handleChangeOrderList} cartData={cartData} handleChangeDataCart={handleChangeDataCart} token={token} userInformation={userInformation} navigation={navigation} />}
                 </Stack.Screen>
                 <Stack.Screen name="PaymentInformation" >
                     {({ navigation, route }) => <PaymentInformation navigation={navigation} route={route} />}

@@ -13,17 +13,32 @@ import {
     HomepageContainer,
     LinePayment
 } from '../components/styles'
-import {
-    EvilIcons,
-    MaterialCommunityIcons,
-} from '@expo/vector-icons'
 
-const Notification = ({ navigation, lengthNotice, token }) => {
-    const formatter = new Intl.NumberFormat('en-US')
+import {
+    fetchUpdateNotice
+} from '../apis/index'
+const Notification = ({ navigation, lengthNotice, token, userInformation, handleReadNotice }) => {
     const [listNotice, setListNotice] = useState(null)
     useEffect(() => {
+        lengthNotice.sort((a, b) => {
+            const dateA = new Date(`${a.date} ${a.time}`);
+            const dateB = new Date(`${b.date} ${b.time}`);
+            return dateB - dateA;
+        });
         setListNotice(lengthNotice)
     }, [lengthNotice]);
+
+    const handleReadNoticeCus = (id, isReadCus) => {
+        if (!isReadCus) {
+            fetchUpdateNotice(userInformation.email, { id: id }, token)
+                .then(result => {
+                    handleReadNotice(id)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+    }
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={{ backgroundColor: 'black' }}>
@@ -33,8 +48,9 @@ const Notification = ({ navigation, lengthNotice, token }) => {
 
                 {listNotice && listNotice.map((item, index) => (
                     <TouchableOpacity onPress={() => {
+                        handleReadNoticeCus(item._id, item.isReadCus)
                         navigation.navigate('OrderDetail', { orderId: item.orderId, token: token })
-                    }} key={index} style={{ backgroundColor: item.isReadCus ? 'black' : '#282828', marginBottom: index === listNotice.length - 1 && 100  }}>
+                    }} key={index} style={{ backgroundColor: item.isReadCus ? 'black' : '#282828', marginBottom: index === listNotice.length - 1 && 100 }}>
                         <View style={styles.cartItems} key={index}>
                             <View style={styles.cartItem}>
                                 <Image source={{ uri: item.product.img[0] }} style={styles.productImage} />
@@ -50,7 +66,7 @@ const Notification = ({ navigation, lengthNotice, token }) => {
                 ))}
 
             </ScrollView>
-            
+
         </View>
     );
 }
