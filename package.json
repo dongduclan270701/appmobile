@@ -36,6 +36,7 @@
     "react-native-gesture-handler": "~2.12.0",
     "react-native-ios-kit": "^0.0.22",
     "react-native-lightbox-v2": "^0.9.0",
+    "react-native-modal": "^13.0.1",
     "react-native-reanimated": "~3.3.0",
     "react-native-restart": "^0.0.27",
     "react-native-web": "~0.19.6",

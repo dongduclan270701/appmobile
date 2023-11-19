@@ -444,8 +444,11 @@ const Homepage = ({ navigation, route, lengthCart }) => {
 
                         <View style={{ alignItems: 'center', marginTop: 30 }}>
                             <TouchableOpacity onPress={() => {
-                                handleChangeSearch('catalogue', 'Laptop', 'laptop')
-                                setSearch({ ...search, minPrice: 0, maxPrice: 90000000 })
+                                const clickedItem = brand.find((item) => item.src === 'laptop');
+                                if (clickedItem) {
+                                    setCategory(clickedItem.category);
+                                    setSearch({ ...search, collection: 'laptop', category: [clickedItem.category[0].collecting[0].name, '', '', '', ''], minPrice: 0, maxPrice: 90000000, nameProduct: '' })
+                                }
                             }}>
                                 <View style={styles.itemClear}>
                                     <Text style={styles.textClear}>Clear </Text>
@@ -478,7 +481,7 @@ const Homepage = ({ navigation, route, lengthCart }) => {
                     </ScrollView>
                 }
             </View>
-                : 
+                :
                 <>
                     <View>
                         <HomepageContainer>
@@ -514,7 +517,7 @@ const Homepage = ({ navigation, route, lengthCart }) => {
                             </TouchableOpacity>
                         </HomepageContainer>
                     </View>
-                    <ScrollView style={{marginBottom:150}}>
+                    <ScrollView style={{ marginBottom: 150 }}>
 
                         <View style={styles.category}>
                             <TouchableOpacity style={styles.imageBackground1} onPress={() => {

@@ -9,7 +9,8 @@ import {
     ActivityIndicator,
     Dimensions,
     Alert,
-    FlatList
+    FlatList,
+    Share
 } from 'react-native';
 import {
     HomepageContainer,
@@ -115,8 +116,12 @@ const ProductDetailScreen = ({ navigation, route, userInformation, cartData, tok
             Alert.alert('Ops!!', `You need to login`);
         }
     }
-    const longPress = (uri) => {
-        CameraRoll.saveToCameraRoll(uri)
+    const longPress = async (url) => {
+        try {
+            const result = await Share.share({ url: url })
+        } catch (error) {
+            Alert.alert(error.message);
+        }
     }
     return (
         <View style={styles.container}>

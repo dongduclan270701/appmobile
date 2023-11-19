@@ -365,18 +365,15 @@ const ProductListScreen = ({ navigation, route }) => {
                         )}
                         onValueChanged={handleValueChange}
                     />
-                </View>
-
-
-                <View style={{ alignItems: 'center', marginTop: 30 }}>
-                    <TouchableOpacity onPress={() => {
-                        handleChangeSearch('catalogue', 'Laptop', 'laptop')
-                        setSearch({ ...search, minPrice: 0, maxPrice: 90000000 })
-                    }}>
-                        <View style={styles.itemClear}>
-                            <Text style={styles.textClear}>Clear </Text>
-                        </View>
-                    </TouchableOpacity>
+                    <View style={{ alignItems: 'center', marginTop:30 }}>
+                        <TouchableOpacity onPress={() => {
+                            setSearch({ ...search, minPrice: 0, maxPrice: 90000000, nameProduct: '', category:[category[0].collecting[0].name, '', '', '', ''] })
+                        }}>
+                            <View style={styles.itemClear}>
+                                <Text style={styles.textClear}>Clear </Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </>
                 : <View style={{ paddingBottom: 220 }}>
