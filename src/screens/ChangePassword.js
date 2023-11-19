@@ -35,14 +35,14 @@ const ChangePassword = ({ navigation, userInformation, token }) => {
         } else if (values.newPassword.length < 8 || !re.test(values.newPassword)) {
             Alert.alert('Incorrect', `New password must be at least 8 characters or more and contain capital letters!`);
         } else {
-            updatePasswordUser(userInformation._id, {...userInformation, oldPassword: values.oldPassword, newPassword: values.newPassword}, token)
+            updatePasswordUser(userInformation._id, { ...userInformation, oldPassword: values.oldPassword, newPassword: values.newPassword }, token)
                 .then(result => {
-                    if(result === 'Password incorrect'){
+                    if (result === 'Password incorrect') {
                         Alert.alert('Incorrect', `Your password incorrect`);
                     } else {
                         navigation.goBack()
                     }
-                    
+
                 })
                 .catch(error => {
                     console.log(error)
@@ -51,11 +51,11 @@ const ChangePassword = ({ navigation, userInformation, token }) => {
     }
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView style={{ backgroundColor: 'black' }}>
-                <View style={styles.homeContainer}>
-                    <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Change password</Text>
-                </View>
 
+            <View style={styles.homeContainer}>
+                <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Change password</Text>
+            </View>
+            <ScrollView style={{ backgroundColor: 'black' }}>
                 <View style={[styles.information]}>
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.label}>Password</Text>

@@ -41,11 +41,11 @@ const Notification = ({ navigation, lengthNotice, token, userInformation, handle
     }
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView style={{ backgroundColor: 'black' }}>
+            
                 <HomepageContainer>
                     <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Notification</Text>
                 </HomepageContainer>
-
+<ScrollView style={{ backgroundColor: 'black' }}>
                 {listNotice && listNotice.map((item, index) => (
                     <TouchableOpacity onPress={() => {
                         handleReadNoticeCus(item._id, item.isReadCus)

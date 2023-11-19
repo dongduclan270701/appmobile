@@ -60,11 +60,12 @@ const Payment = ({ navigation, userInformation, handleChangeInformation, token }
     }
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView style={{ backgroundColor: 'black' }}>
+            
                 <View style={styles.homeContainer}>
                     <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Edit</Text>
                 </View>
-                <View style={styles.informationLogo}>
+            <ScrollView style={{ backgroundColor: 'black' }}>    
+            <View style={styles.informationLogo}>
                     <Image style={styles.logo} source={{ uri: values.image }} />
                     <View style={styles.textContainer}>
                         <Text style={styles.email}>{values.email}</Text>

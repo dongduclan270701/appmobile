@@ -18,29 +18,7 @@ import {
     AntDesign,
     MaterialCommunityIcons
 } from '@expo/vector-icons'
-const User = ({ navigation, token, userInformation, handleSetLogged, orderList, handleChangeStepDefault }) => {
-    const [countOrder, setCountOrder] = useState({ processing: 0, delivery: 0, successful: 0, cancel: 0 })
-    const stepStatusMapping = {
-        processing: ['Ordered', 'Payment information confirmed'],
-        delivery: ['Delivered to the carrier', 'Being transported'],
-        successful: ['Delivery successful'],
-        cancel: ['Cancel', 'Delivery failed'],
-    }
-    useEffect(() => {
-        if (orderList) {
-            const countOrders = orderList.orders.reduce((accumulator, order) => {
-                for (const type in stepStatusMapping) {
-                    if (stepStatusMapping[type].includes(order.status)) {
-                        accumulator[type] += 1
-                        break
-                    }
-                }
-                return accumulator;
-            }, { processing: 0, delivery: 0, successful: 0, cancel: 0 });
-            setCountOrder(countOrders);
-        }
-        console.log(1)
-    }, [orderList]);
+const User = ({ navigation, token, userInformation, handleSetLogged, countOrder, handleChangeStepDefault }) => {
     return (
         <ScrollView style={{ backgroundColor: 'black' }}>
             <HomepageContainer>

@@ -23,11 +23,12 @@ import {
 const AccountSecurity = ({navigation, userInformation}) => {
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView style={{ backgroundColor: 'black' }}>
+            
                 <HomepageContainer>
                     <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Account & Security</Text>
                 </HomepageContainer>
-                <TouchableOpacity style={styles.listItem} onPress={() => {
+                <ScrollView style={{ backgroundColor: 'black' }}>
+                    <TouchableOpacity style={styles.listItem} onPress={() => {
                     navigation.navigate('ChangeInformationAccount')
                 }}>
                     <View style={{ flexDirection: 'row' }}>

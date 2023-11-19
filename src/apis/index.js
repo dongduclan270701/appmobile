@@ -91,11 +91,11 @@ export const fetchGoodsByName = async (id, data) => {
 //     return req.data
 // }
 
-export const fetchCancelOrder = async (id, data) => {
+export const fetchCancelOrder = async (id, data, token) => {
     const req = await axios.put(`${API_ROOT}/v1/orderUser/${id}`, data,{ headers: { 'auth-token-user': token }})
     return req.data
 }
-export const fetchRatingOrder = async (id,data) => {
+export const fetchRatingOrder = async (id,data, token) => {
     const req = await axios.put(`${API_ROOT}/v1/orderUser/ratingOrder/${id}`, data,{ headers: { 'auth-token-user': token }})
     return req.data
 }

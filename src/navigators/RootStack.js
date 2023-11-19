@@ -32,13 +32,13 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeDrawer = (props) => {
-    const { cartData, token, userInformation, handleSetLogged, orderList, noticeList, handleChangeStepDefault, handleReadNotice } = props
+    const { cartData, token, userInformation, handleSetLogged, orderList, noticeList, handleChangeStepDefault, handleReadNotice, countOrder } = props
     const [lengthCart, setLengthCart] = useState([])
     const [lengthNotice, setLengthNotice] = useState([])
     useEffect(() => {
         setLengthCart(cartData)
         setLengthNotice(noticeList)
-    }, [cartData, noticeList]);
+    }, [cartData, noticeList, countOrder]);
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -85,7 +85,7 @@ const HomeDrawer = (props) => {
                     <Ionicons name="person" color={color} size={26} />
                 ),
             }} >
-                {({ navigation, route }) => <User orderList={orderList} handleChangeStepDefault={handleChangeStepDefault} token={token} userInformation={userInformation} navigation={navigation} route={route} handleSetLogged={handleSetLogged} />}
+                {({ navigation, route }) => <User countOrder={countOrder} orderList={orderList} handleChangeStepDefault={handleChangeStepDefault} token={token} userInformation={userInformation} navigation={navigation} route={route} handleSetLogged={handleSetLogged} />}
             </Tab.Screen>
         </Tab.Navigator >
     )
@@ -99,6 +99,13 @@ const RootStack = ({ navigation }) => {
     const [orderList, setOrderList] = useState(null)
     const [noticeList, setNoticeList] = useState(null)
     const [stepDefault, setStepDefault] = useState(0)
+    const [countOrder, setCountOrder] = useState({ processing: 0, delivery: 0, successful: 0, cancel: 0 })
+    const stepStatusMapping = {
+        processing: ['Ordered', 'Payment information confirmed'],
+        delivery: ['Delivered to the carrier', 'Being transported'],
+        successful: ['Delivery successful'],
+        cancel: ['Cancel', 'Delivery failed'],
+    }
     const handleSetLogged = (data) => {
         if (data.token !== null & data.user !== null) {
             setToken(data.token)
@@ -112,7 +119,17 @@ const RootStack = ({ navigation }) => {
                 })
             fetchUserOrderDetails(data.user[0], data.token)
                 .then(result => {
-                    setOrderList(result)
+                    setOrderList(result.orders)
+                    const countOrders = result.orders.reduce((accumulator, order) => {
+                        for (const type in stepStatusMapping) {
+                            if (stepStatusMapping[type].includes(order.status)) {
+                                accumulator[type] += 1
+                                break
+                            }
+                        }
+                        return accumulator;
+                    }, { processing: 0, delivery: 0, successful: 0, cancel: 0 })
+                    setCountOrder(countOrders);
                 })
                 .catch(error => {
                     console.log(error)
@@ -120,7 +137,6 @@ const RootStack = ({ navigation }) => {
             fetchNoticeByCustomer(data.user[0], data.token)
                 .then(result => {
                     setNoticeList(result)
-                    console.log(result)
                 })
                 .catch(error => {
                     console.log(error)
@@ -158,7 +174,38 @@ const RootStack = ({ navigation }) => {
     const handleChangeOrderList = (data) => {
         const firstImg = data.product[0].img[0]
         data.product[0].img = firstImg
-        orderList.orders.unshift(data)
+        orderList.unshift(data)
+        const countOrders = orderList.reduce((accumulator, order) => {
+            for (const type in stepStatusMapping) {
+                if (stepStatusMapping[type].includes(order.status)) {
+                    accumulator[type] += 1
+                    break
+                }
+            }
+            return accumulator;
+        }, { processing: 0, delivery: 0, successful: 0, cancel: 0 })
+        setCountOrder(countOrders);
+    }
+    const handleChangeOrderListCancel = (data) => {
+        const updatedArray = orderList.map(item => {
+            if (item.orderId === data.orderId) {
+                const firstImg = data.product[0].img[0]
+                data.product[0].img = firstImg
+                return data
+            }
+            return item
+        });
+        const countOrders = updatedArray.reduce((accumulator, order) => {
+            for (const type in stepStatusMapping) {
+                if (stepStatusMapping[type].includes(order.status)) {
+                    accumulator[type] += 1
+                    break
+                }
+            }
+            return accumulator;
+        }, { processing: 0, delivery: 0, successful: 0, cancel: 0 })
+        setCountOrder(countOrders);
+        setOrderList(updatedArray)
     }
     useEffect(() => {
         const getData = async () => {
@@ -183,7 +230,17 @@ const RootStack = ({ navigation }) => {
                     })
                 fetchUserOrderDetails(JSON.parse(userInf)[0], token)
                     .then(result => {
-                        setOrderList(result)
+                        setOrderList(result.orders)
+                        const countOrders = result.orders.reduce((accumulator, order) => {
+                            for (const type in stepStatusMapping) {
+                                if (stepStatusMapping[type].includes(order.status)) {
+                                    accumulator[type] += 1
+                                    break
+                                }
+                            }
+                            return accumulator;
+                        }, { processing: 0, delivery: 0, successful: 0, cancel: 0 })
+                        setCountOrder(countOrders);
                     })
                     .catch(error => {
                         console.log(error)
@@ -223,7 +280,7 @@ const RootStack = ({ navigation }) => {
                 </Stack.Screen>
                 <Stack.Screen name='Signup' component={Signup} />
                 <Stack.Screen name='HomeDrawer' options={{ headerShown: false }}>
-                    {() => <HomeDrawer handleChangeStepDefault={handleChangeStepDefault} handleReadNotice={handleReadNotice} noticeList={noticeList} orderList={orderList} cartData={cartData} token={token} userInformation={userInformation} handleSetLogged={handleSetLogged} handleChangeDataCart={handleChangeDataCart} />}
+                    {() => <HomeDrawer countOrder={countOrder} handleChangeStepDefault={handleChangeStepDefault} handleReadNotice={handleReadNotice} noticeList={noticeList} orderList={orderList} cartData={cartData} token={token} userInformation={userInformation} handleSetLogged={handleSetLogged} handleChangeDataCart={handleChangeDataCart} />}
                 </Stack.Screen>
                 <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
                 <Stack.Screen name="ProductDetailScreen" >
@@ -251,7 +308,9 @@ const RootStack = ({ navigation }) => {
                 <Stack.Screen name="Order" >
                     {({ navigation }) => <Order orderList={orderList} stepDefault={stepDefault} token={token} navigation={navigation} />}
                 </Stack.Screen>
-                <Stack.Screen name="OrderDetail" component={OrderDetail} />
+                <Stack.Screen name="OrderDetail" >
+                    {({ navigation, route }) => <OrderDetail handleChangeOrderListCancel={handleChangeOrderListCancel} token={token} route={route} handleChangeNotice={handleChangeNotice} userInformation={userInformation} navigation={navigation} />}
+                </Stack.Screen>
             </Stack.Navigator>
         </NavigationContainer>
     )

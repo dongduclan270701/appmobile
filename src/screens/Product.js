@@ -10,7 +10,9 @@ import {
 import {
     HomepageContainer
 } from '../components/styles'
-
+import {
+    fetchCollecting,
+} from '../apis/index'
 const Product = ({ navigation }) => {
     return (
         <ScrollView style={{backgroundColor:'black'}}>

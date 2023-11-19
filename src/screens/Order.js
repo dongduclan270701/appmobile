@@ -32,7 +32,7 @@ const Order = ({ navigation, orderList, token, stepDefault }) => {
         setStep(option)
     };
     const handleSearchOrder = () => {
-        const foundOrders = orderList.orders.filter(order => order.orderId.includes(searchOrderId.toLowerCase()));
+        const foundOrders = newOrderList.filter(order => order.orderId.includes(searchOrderId.toLowerCase()));
         if (foundOrders.length > 0) {
             setNewOrderList([...foundOrders])
         } else {
@@ -40,58 +40,59 @@ const Order = ({ navigation, orderList, token, stepDefault }) => {
         }
     };
     useEffect(() => {
-        const filteredOrders = orderList.orders.filter(item => stepStatusMapping[step].includes(item.status));
+        const filteredOrders = orderList.filter(item => stepStatusMapping[step].includes(item.status));
         setNewOrderList(filteredOrders)
     }, [orderList, step]);
     return (
-        <View style={{ flex: 1 }}>
-            <ScrollView style={{ backgroundColor: 'black' }}>
-                <HomepageContainer>
-                    <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Order</Text>
-                </HomepageContainer>
-                <View style={{ flexDirection: 'row', width: '100%', padding: 10 }}>
-                    <TextInput
-                        style={styles.searchInput}
-                        placeholder="Enter Order ID"
-                        placeholderTextColor="gray"
-                        onChangeText={text => setSearchOrderId(text)}
-                        value={searchOrderId}
-                    />
-                    <TouchableOpacity
-                        style={styles.searchButton}
-                        onPress={handleSearchOrder}
-                    >
-                        <EvilIcons name='search' style={styles.searchButtonText} />
-                    </TouchableOpacity>
-                </View>
-                <View style={{ flexDirection: 'row', width: '100%', padding: 10, marginBottom: 10 }}>
-                    <TouchableOpacity
-                        style={[styles.processItem, step === 0 && styles.selectedProcessItem]}
-                        onPress={() => handleOptionChange(0)}
-                    >
-                        <Text style={[styles.processText, step === 0 && styles.selectedProcessText]}>Process</Text>
-                    </TouchableOpacity>
+        <View style={{ flex: 1, backgroundColor: 'black' }}>
 
-                    <TouchableOpacity
-                        style={[styles.processItem, step === 1 && styles.selectedProcessItem]}
-                        onPress={() => handleOptionChange(1)}
-                    >
-                        <Text style={[styles.processText, step === 1 && styles.selectedProcessText]}>Delivery</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.processItem, step === 2 && styles.selectedProcessItem]}
-                        onPress={() => handleOptionChange(2)}
-                    >
-                        <Text style={[styles.processText, step === 2 && styles.selectedProcessText]}>Successful</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.processItem, step === 3 && styles.selectedProcessItem]}
-                        onPress={() => handleOptionChange(3)}
-                    >
-                        <Text style={[styles.processText, step === 3 && styles.selectedProcessText]}>Cancel</Text>
-                    </TouchableOpacity>
-                </View>
+            <HomepageContainer>
+                <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Order</Text>
+            </HomepageContainer>
 
+            <View style={{ flexDirection: 'row', width: '100%', padding: 10 }}>
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Enter Order ID"
+                    placeholderTextColor="gray"
+                    onChangeText={text => setSearchOrderId(text)}
+                    value={searchOrderId}
+                />
+                <TouchableOpacity
+                    style={styles.searchButton}
+                    onPress={handleSearchOrder}
+                >
+                    <EvilIcons name='search' style={styles.searchButtonText} />
+                </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: 'row', width: '100%', padding: 10, marginBottom: 10 }}>
+                <TouchableOpacity
+                    style={[styles.processItem, step === 0 && styles.selectedProcessItem]}
+                    onPress={() => handleOptionChange(0)}
+                >
+                    <Text style={[styles.processText, step === 0 && styles.selectedProcessText]}>Process</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={[styles.processItem, step === 1 && styles.selectedProcessItem]}
+                    onPress={() => handleOptionChange(1)}
+                >
+                    <Text style={[styles.processText, step === 1 && styles.selectedProcessText]}>Delivery</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.processItem, step === 2 && styles.selectedProcessItem]}
+                    onPress={() => handleOptionChange(2)}
+                >
+                    <Text style={[styles.processText, step === 2 && styles.selectedProcessText]}>Successful</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.processItem, step === 3 && styles.selectedProcessItem]}
+                    onPress={() => handleOptionChange(3)}
+                >
+                    <Text style={[styles.processText, step === 3 && styles.selectedProcessText]}>Cancel</Text>
+                </TouchableOpacity>
+            </View>
+            <ScrollView style={{ backgroundColor: 'black', marginBottom:50 }}>
                 {newOrderList && newOrderList.map((item, index) => (
                     <TouchableOpacity onPress={() => {
                         navigation.navigate('OrderDetail', { orderId: item.orderId, token: token })
