@@ -6,11 +6,13 @@ import {
     StyleSheet,
     ScrollView,
     TextInput,
-    Alert
+    Alert,
+    Button
 } from 'react-native';
 import axios from 'axios';
 import { Formik } from 'formik';
 import { Picker } from '@react-native-picker/picker';
+import Modal from "react-native-modal";
 const PaymentInformation = ({ navigation, route }) => {
     const [values, setValues] = useState({ username: '', phoneNumber: '', address: '', city: '', district: '', commune: '' })
     const [cityData, setCityData] = useState([]);
@@ -29,7 +31,6 @@ const PaymentInformation = ({ navigation, route }) => {
     const handleBlur = () => {
 
     }
-
     useEffect(() => {
         const getCity = async () => {
             try {
@@ -135,20 +136,25 @@ const PaymentInformation = ({ navigation, route }) => {
                             <Text style={styles.input}>{values.city || 'Select City'}</Text>
                         </TouchableOpacity>
                         {showCityPicker && (
-                            <Picker
-                                itemStyle={{ color: 'white', padding: 0, margin: 0 }}
-                                selectedValue={values.city}
-                                onValueChange={
-                                    (text) => {
-                                        handleChooseCity(text)
-                                    }
-                                }
-                            >
-                                <Picker.Item label='Select City' value='' />
-                                {cityData.map((item, index) => {
-                                    return <Picker.Item label={item.Name} value={item.Name} key={index} />;
-                                })}
-                            </Picker>
+                            <Modal isVisible={showCityPicker}>
+                                <View>
+                                    <Picker
+                                        itemStyle={{ color: 'white', paddingBottom: 100, margin: 0 }}
+                                        selectedValue={values.district}
+                                        onValueChange={
+                                            (text) => {
+                                                handleChooseCity(text)
+                                            }
+                                        }
+                                    >
+                                        <Picker.Item label='Select Commune' value='' />
+                                        {cityData.map((item, index) => {
+                                            return <Picker.Item label={item.Name} value={item.Name} key={index} />;
+                                        })}
+                                    </Picker>
+                                    <Button color='grey' title="Close" onPress={() => setShowCityPicker(false)} />
+                                </View>
+                            </Modal>
                         )}
 
                         <Text style={styles.label}>District</Text>
@@ -159,22 +165,26 @@ const PaymentInformation = ({ navigation, route }) => {
                             <Text style={styles.input}>{values.district || 'Select District'}</Text>
                         </TouchableOpacity>
                         {showDistrictPicker && (
-                            <Picker
-                                itemStyle={{ color: 'white', padding: 0, margin: 0 }}
-                                selectedValue={values.district}
-                                onValueChange={
-                                    (text) => {
-                                        handleChooseDistrict(text)
-                                    }
-                                }
-                            >
-                                <Picker.Item label='Select District' value='' />
-                                {districtData.map((item, index) => {
-                                    return <Picker.Item label={item.Name} value={item.Name} key={index} />;
-                                })}
-                            </Picker>
+                            <Modal isVisible={showDistrictPicker}>
+                                <View>
+                                    <Picker
+                                        itemStyle={{ color: 'white', paddingBottom: 100, margin: 0 }}
+                                        selectedValue={values.district}
+                                        onValueChange={
+                                            (text) => {
+                                                handleChooseDistrict(text)
+                                            }
+                                        }
+                                    >
+                                        <Picker.Item label='Select Commune' value='' />
+                                        {districtData.map((item, index) => {
+                                            return <Picker.Item label={item.Name} value={item.Name} key={index} />;
+                                        })}
+                                    </Picker>
+                                    <Button color='grey' title="Close" onPress={() => setShowDistrictPicker(false)} />
+                                </View>
+                            </Modal>
                         )}
-
                         <Text style={styles.label}>Commune</Text>
                         <TouchableOpacity
                             style={styles.inputContainer}
@@ -183,20 +193,25 @@ const PaymentInformation = ({ navigation, route }) => {
                             <Text style={styles.input}>{values.commune || 'Select Commune'}</Text>
                         </TouchableOpacity>
                         {showCommunePicker && (
-                            <Picker
-                                itemStyle={{ color: 'white', paddingBottom: 100, margin: 0 }}
-                                selectedValue={values.commune}
-                                onValueChange={
-                                    (text) => {
-                                        handleChooseCommune(text)
-                                    }
-                                }
-                            >
-                                <Picker.Item label='Select Commune' value='' />
-                                {communeData.map((item, index) => {
-                                    return <Picker.Item label={item.Name} value={item.Name} key={index} />;
-                                })}
-                            </Picker>
+                            <Modal isVisible={showCommunePicker}>
+                                <View>
+                                    <Picker
+                                        itemStyle={{ color: 'white', paddingBottom: 100, margin: 0 }}
+                                        selectedValue={values.commune}
+                                        onValueChange={
+                                            (text) => {
+                                                handleChooseCommune(text)
+                                            }
+                                        }
+                                    >
+                                        <Picker.Item label='Select Commune' value='' />
+                                        {communeData.map((item, index) => {
+                                            return <Picker.Item label={item.Name} value={item.Name} key={index} />;
+                                        })}
+                                    </Picker>
+                                    <Button color='grey' title="Close" onPress={() => setShowCommunePicker(false)} />
+                                </View>
+                            </Modal>
                         )}
                         <View style={{ paddingBottom: 100 }} />
                     </View>

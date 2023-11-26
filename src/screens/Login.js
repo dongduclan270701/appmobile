@@ -9,7 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Formik } from 'formik'
 import { Octicons, Ionicons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
+import { CommonActions } from '@react-navigation/native';
 import {
     StyledContainer,
     InnerContainer,
@@ -32,7 +32,6 @@ import {
 } from '../components/styles'
 import { fetchUserDetails } from '../apis/index'
 const { brand, darkLight, primary } = Colors
-
 const Login = ({ navigation, handleSetLogged }) => {
     const [hidePassword, setHidePassword] = useState(true)
     const [message, setMessage] = useState()
@@ -52,7 +51,14 @@ const Login = ({ navigation, handleSetLogged }) => {
                         AsyncStorage.setItem('token', result.token);
                         AsyncStorage.setItem('userInformation', JSON.stringify(result.user));
                         handleSetLogged(result)
-                        navigation.navigate('HomeDrawer')
+                        navigation.dispatch(
+                            CommonActions.reset({
+                                index: 1,
+                                routes: [
+                                    { name: 'HomeDrawer' },
+                                ],
+                            })
+                        );
                     } catch (error) {
                         console.error('Lỗi khi lưu trữ:', error);
                     }

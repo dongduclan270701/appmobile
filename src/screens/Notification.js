@@ -20,13 +20,16 @@ import {
 const Notification = ({ navigation, lengthNotice, token, userInformation, handleReadNotice }) => {
     const [listNotice, setListNotice] = useState(null)
     useEffect(() => {
+        if (token === null) return navigation.navigate('Login')
+        if (lengthNotice === null) return navigation.navigate('Login')
         lengthNotice.sort((a, b) => {
             const dateA = new Date(`${a.date} ${a.time}`);
             const dateB = new Date(`${b.date} ${b.time}`);
             return dateB - dateA;
         });
         setListNotice(lengthNotice)
-    }, [lengthNotice]);
+
+    }, [lengthNotice, token]);
 
     const handleReadNoticeCus = (id, isReadCus) => {
         if (!isReadCus) {
@@ -40,12 +43,12 @@ const Notification = ({ navigation, lengthNotice, token, userInformation, handle
         }
     }
     return (
-        <View style={{ flex: 1 }}>
-            
-                <HomepageContainer>
-                    <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Notification</Text>
-                </HomepageContainer>
-<ScrollView style={{ backgroundColor: 'black' }}>
+        <View style={{ flex: 1, backgroundColor: 'black' }}>
+
+            <HomepageContainer>
+                <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Notification</Text>
+            </HomepageContainer>
+            {token !== null && <ScrollView style={{ backgroundColor: 'black' }}>
                 {listNotice && listNotice.map((item, index) => (
                     <TouchableOpacity onPress={() => {
                         handleReadNoticeCus(item._id, item.isReadCus)
@@ -65,7 +68,7 @@ const Notification = ({ navigation, lengthNotice, token, userInformation, handle
                     </TouchableOpacity>
                 ))}
 
-            </ScrollView>
+            </ScrollView>}
 
         </View>
     );

@@ -1,104 +1,106 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
     View,
     StyleSheet,
     Text,
     ScrollView,
     ImageBackground,
-    TouchableOpacity
-} from 'react-native';
-import {
-    HomepageContainer
-} from '../components/styles'
-import {
-    fetchCollecting,
-} from '../apis/index'
-const Product = ({ navigation }) => {
+    TouchableOpacity,
+    RefreshControl,
+    SafeAreaView,
+} from 'react-native'
+const Product = ({ navigation, refreshing, onRefresh }) => {
     return (
-        <ScrollView style={{backgroundColor:'black'}}>
-            <HomepageContainer>
-            </HomepageContainer>
-            <View >
-                <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'laptop-gaming', nameCategory:'Laptop Gaming' })
-                }}>
-                    <ImageBackground
-                        source={require('../../assets/laptopGaming.jpg')}
-                        style={styles.imageBackground1}
-                        borderRadius={20}
-                    >
-                        <Text style={styles.text1}>Laptop Gaming</Text>
-                    </ImageBackground>
-                </TouchableOpacity>
-            </View>
+        <SafeAreaView style={{ backgroundColor: 'black' }}>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
+                        tintColor="white"
+                    />
+                }
+            >
+                <View >
+                    <TouchableOpacity style={styles.category} onPress={() => {
+                        navigation.navigate('ProductListScreen', { category: 'laptop-gaming', nameCategory: 'Laptop Gaming' })
+                    }}>
+                        <ImageBackground
+                            source={require('../../assets/laptopGaming.jpg')}
+                            style={styles.imageBackground1}
+                            borderRadius={20}
+                        >
+                            <Text style={styles.text1}>Laptop Gaming</Text>
+                        </ImageBackground>
+                    </TouchableOpacity>
+                </View>
 
-            <View >
-                <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'laptop', nameCategory:'Laptop' })
-                }}>
-                    <ImageBackground
-                        source={require('../../assets/laptop.jpg')}
-                        style={styles.imageBackground2}
-                        borderRadius={20}
-                    >
-                        <Text style={styles.text2}>Laptop</Text>
-                    </ImageBackground>
-                </TouchableOpacity>
-            </View>
+                <View >
+                    <TouchableOpacity style={styles.category} onPress={() => {
+                        navigation.navigate('ProductListScreen', { category: 'laptop', nameCategory: 'Laptop' })
+                    }}>
+                        <ImageBackground
+                            source={require('../../assets/laptop.jpg')}
+                            style={styles.imageBackground2}
+                            borderRadius={20}
+                        >
+                            <Text style={styles.text2}>Laptop</Text>
+                        </ImageBackground>
+                    </TouchableOpacity>
+                </View>
 
-            <View>
-                <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'pc-creator', nameCategory:'PC Creator' })
-                }}>
-                    <ImageBackground
-                        source={require('../../assets/PC.jpg')}
-                        style={styles.imageBackground3}
-                        borderRadius={20}
-                    >
-                        <Text style={styles.text2}>PC Creator</Text>
-                    </ImageBackground>
-                </TouchableOpacity>
-            </View>
-            <View>
-                <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'pc-company', nameCategory:'PC Company' })
-                }}>
-                    <ImageBackground
-                        source={require('../../assets/PC.jpg')}
-                        style={styles.imageBackground4}
-                        borderRadius={20}
-                    >
-                        <Text style={styles.text3}>PC Company</Text>
-                    </ImageBackground>
-                </TouchableOpacity>
-            </View>
-            <View>
-                <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'pc-gaming', nameCategory:'PC Gaming' })
-                }}>
-                    <ImageBackground
-                        source={require('../../assets/PC.jpg')}
-                        style={styles.imageBackground5}
-                        borderRadius={20}
-                    >
-                        <Text style={styles.text4}>PC Gaming</Text>
-                    </ImageBackground>
-                </TouchableOpacity>
-            </View>
-            <View>
-                <TouchableOpacity style={styles.category} onPress={() => {
-                    navigation.navigate('ProductListScreen', { category: 'apple', nameCategory:'Apple' })
-                }}>
-                    <ImageBackground
-                        source={require('../../assets/Apple.png')}
-                        style={styles.imageBackground6}
-                        borderRadius={20}
-                    >
-                        <Text style={styles.text5}>Apple</Text>
-                    </ImageBackground>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+                <View>
+                    <TouchableOpacity style={styles.category} onPress={() => {
+                        navigation.navigate('ProductListScreen', { category: 'pc-creator', nameCategory: 'PC Creator' })
+                    }}>
+                        <ImageBackground
+                            source={require('../../assets/PC.jpg')}
+                            style={styles.imageBackground3}
+                            borderRadius={20}
+                        >
+                            <Text style={styles.text2}>PC Creator</Text>
+                        </ImageBackground>
+                    </TouchableOpacity>
+                </View>
+                <View>
+                    <TouchableOpacity style={styles.category} onPress={() => {
+                        navigation.navigate('ProductListScreen', { category: 'pc-company', nameCategory: 'PC Company' })
+                    }}>
+                        <ImageBackground
+                            source={require('../../assets/PC.jpg')}
+                            style={styles.imageBackground4}
+                            borderRadius={20}
+                        >
+                            <Text style={styles.text3}>PC Company</Text>
+                        </ImageBackground>
+                    </TouchableOpacity>
+                </View>
+                <View>
+                    <TouchableOpacity style={styles.category} onPress={() => {
+                        navigation.navigate('ProductListScreen', { category: 'pc-gaming', nameCategory: 'PC Gaming' })
+                    }}>
+                        <ImageBackground
+                            source={require('../../assets/PC.jpg')}
+                            style={styles.imageBackground5}
+                            borderRadius={20}
+                        >
+                            <Text style={styles.text4}>PC Gaming</Text>
+                        </ImageBackground>
+                    </TouchableOpacity>
+                </View>
+                <View>
+                    <TouchableOpacity style={styles.category} onPress={() => {
+                        navigation.navigate('ProductListScreen', { category: 'apple', nameCategory: 'Apple' })
+                    }}>
+                        <ImageBackground
+                            source={require('../../assets/Apple.png')}
+                            style={styles.imageBackground6}
+                            borderRadius={20}
+                        >
+                            <Text style={styles.text5}>Apple</Text>
+                        </ImageBackground>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 

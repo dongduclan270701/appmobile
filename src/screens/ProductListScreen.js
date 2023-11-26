@@ -35,7 +35,7 @@ const ProductListScreen = ({ navigation, route }) => {
         minPrice: 0,
         maxPrice: 90000000
     })
-    const [category, setCategory] = useState([])
+    const [category, setCategory] = useState(null)
 
     const handleValueChange = useCallback(
         (newLow, newHigh) => {
@@ -367,6 +367,7 @@ const ProductListScreen = ({ navigation, route }) => {
                     />
                     <View style={{ alignItems: 'center', marginTop:30 }}>
                         <TouchableOpacity onPress={() => {
+                            if (category === null) return 0
                             setSearch({ ...search, minPrice: 0, maxPrice: 90000000, nameProduct: '', category:[category[0].collecting[0].name, '', '', '', ''] })
                         }}>
                             <View style={styles.itemClear}>

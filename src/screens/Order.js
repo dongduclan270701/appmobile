@@ -40,17 +40,19 @@ const Order = ({ navigation, orderList, token, stepDefault }) => {
         }
     };
     useEffect(() => {
+        if (token === null) return navigation.navigate('Login')
+        if (orderList === null) return navigation.navigate('Login')
         const filteredOrders = orderList.filter(item => stepStatusMapping[step].includes(item.status));
         setNewOrderList(filteredOrders)
-    }, [orderList, step]);
-    return (
-        <View style={{ flex: 1, backgroundColor: 'black' }}>
+    }, [orderList, step, token]);
+return (
+    <View style={{ flex: 1, backgroundColor: 'black' }}>
 
-            <HomepageContainer>
-                <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Order</Text>
-            </HomepageContainer>
-
-            <View style={{ flexDirection: 'row', width: '100%', padding: 10 }}>
+        <HomepageContainer>
+            <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Order</Text>
+        </HomepageContainer>
+        {token && <>
+            <View style={{ flexDirection: 'row', borderWidth:1, borderColor:'grey', borderRadius: 10, margin:10 }}>
                 <TextInput
                     style={styles.searchInput}
                     placeholder="Enter Order ID"
@@ -92,7 +94,7 @@ const Order = ({ navigation, orderList, token, stepDefault }) => {
                     <Text style={[styles.processText, step === 3 && styles.selectedProcessText]}>Cancel</Text>
                 </TouchableOpacity>
             </View>
-            <ScrollView style={{ backgroundColor: 'black', marginBottom:50 }}>
+            <ScrollView style={{ backgroundColor: 'black', marginBottom: 50 }}>
                 {newOrderList && newOrderList.map((item, index) => (
                     <TouchableOpacity onPress={() => {
                         navigation.navigate('OrderDetail', { orderId: item.orderId, token: token })
@@ -103,7 +105,7 @@ const Order = ({ navigation, orderList, token, stepDefault }) => {
                                 <Text style={{ color: 'white' }}>{item.status}</Text>
                             </View>
                             <View style={styles.cartItem}>
-                                <Image source={{ uri: item.product[0].img }} style={styles.productImage} />
+                                <Image source={{ uri: item.product[0].img[0] }} style={styles.productImage} />
                                 <View style={styles.productInfo}>
                                     <Text style={styles.productName}>{item.product[0].nameProduct}</Text>
                                     <Text style={styles.productPrice}>{formatter.format(item.product[0].nowPrice)} VNĐ</Text>
@@ -123,8 +125,10 @@ const Order = ({ navigation, orderList, token, stepDefault }) => {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
-        </View>
-    );
+        </>
+        }
+    </View>
+);
 }
 
 const styles = StyleSheet.create({
@@ -145,19 +149,13 @@ const styles = StyleSheet.create({
         color: '#e33c4b'
     },
     searchInput: {
-        borderWidth: 1,
-        borderColor: 'grey',
-        borderRadius: 5,
         color: 'white',
         fontSize: 16,
         padding: 10,
         width: "80%"
     },
     searchButton: {
-        borderColor: 'grey',
-        borderWidth: 1,
         padding: 10,
-        borderRadius: 5,
         alignItems: 'center',
         width: "20%"
     },

@@ -8,7 +8,8 @@ import {
     TextInput,
     Image,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    Button
 } from 'react-native';
 import axios from 'axios';
 import { Formik } from 'formik';
@@ -16,6 +17,7 @@ import { Picker } from '@react-native-picker/picker';
 import {
     updateUser
 } from '../apis/index'
+import Modal from "react-native-modal";
 const Payment = ({ navigation, userInformation, handleChangeInformation, token }) => {
     const [values, setValues] = useState({ username: '', phoneNumber: '', address: '', sex: '', age: '' })
     const [showSex, setShowSex] = useState(false)
@@ -43,7 +45,7 @@ const Payment = ({ navigation, userInformation, handleChangeInformation, token }
             updateUser(values._id, values, token)
                 .then(result => {
                     handleChangeInformation(result)
-                    
+
                     navigation.goBack()
                 })
                 .catch(error => {
@@ -60,12 +62,12 @@ const Payment = ({ navigation, userInformation, handleChangeInformation, token }
     }
     return (
         <View style={{ flex: 1 }}>
-            
-                <View style={styles.homeContainer}>
-                    <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Edit</Text>
-                </View>
-            <ScrollView style={{ backgroundColor: 'black' }}>    
-            <View style={styles.informationLogo}>
+
+            <View style={styles.homeContainer}>
+                <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Edit</Text>
+            </View>
+            <ScrollView style={{ backgroundColor: 'black' }}>
+                <View style={styles.informationLogo}>
                     <Image style={styles.logo} source={{ uri: values.image }} />
                     <View style={styles.textContainer}>
                         <Text style={styles.email}>{values.email}</Text>
@@ -101,7 +103,7 @@ const Payment = ({ navigation, userInformation, handleChangeInformation, token }
                         >
                             <Text style={styles.input}>{values.age || 'Select Age'}</Text>
                         </TouchableOpacity>
-                        {showAge && (
+                        {showAge && (<Modal isVisible={showAge}>
                             <Picker
                                 itemStyle={{ color: 'white', padding: 0, margin: 0 }}
                                 selectedValue={values.age}
@@ -112,6 +114,8 @@ const Payment = ({ navigation, userInformation, handleChangeInformation, token }
                                     <Picker.Item label={value} value={value} key={value} />
                                 ))}
                             </Picker>
+                            <Button color='grey' title="Close" onPress={() => setShowAge(false)} />
+                        </Modal>
                         )}
                         <Text style={styles.label}>Sex</Text>
                         <TouchableOpacity
@@ -121,24 +125,29 @@ const Payment = ({ navigation, userInformation, handleChangeInformation, token }
                             <Text style={styles.input}>{values.sex || 'Select Sex'}</Text>
                         </TouchableOpacity>
                         {showSex && (
-                            <Picker
-                                itemStyle={{ color: 'white', padding: 0, margin: 0 }}
-                                selectedValue={values.sex}
-                                onValueChange={(text) => handleChange('sex', text)}
-                            >
-                                <Picker.Item label='Select Sex' value='' />
-                                <Picker.Item label='Male' value='Male' />
-                                <Picker.Item label='Female' value='Female' />
-                            </Picker>
+                            <Modal isVisible={showSex}>
+                                <View>
+                                    <Picker
+                                        itemStyle={{ color: 'white', padding: 0, margin: 0 }}
+                                        selectedValue={values.sex}
+                                        onValueChange={(text) => handleChange('sex', text)}
+                                    >
+                                        <Picker.Item label='Select Sex' value='' />
+                                        <Picker.Item label='Male' value='Male' />
+                                        <Picker.Item label='Female' value='Female' />
+                                    </Picker>
+                                    <Button color='grey' title="Close" onPress={() => setShowSex(false)} />
+                                </View>
+                            </Modal>
                         )}
                         <View style={{ paddingBottom: 100 }} />
                     </View>
                 </View>
             </ScrollView>
-            {isLoading ? 
-            <View style={styles.buyButton}>
-                <ActivityIndicator size='large' color={'white'} />
-            </View>
+            {isLoading ?
+                <View style={styles.buyButton}>
+                    <ActivityIndicator size='large' color={'white'} />
+                </View>
                 :
                 <TouchableOpacity
                     style={styles.buyButton}

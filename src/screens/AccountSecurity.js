@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     View,
     StyleSheet,
@@ -20,15 +20,18 @@ import {
     MaterialIcons
 } from '@expo/vector-icons'
 
-const AccountSecurity = ({navigation, userInformation}) => {
+const AccountSecurity = ({ navigation, userInformation, token }) => {
+    useEffect(() => {
+        if (token === null) return navigation.navigate('Login')
+    }, [token]);
     return (
-        <View style={{ flex: 1 }}>
-            
-                <HomepageContainer>
-                    <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Account & Security</Text>
-                </HomepageContainer>
-                <ScrollView style={{ backgroundColor: 'black' }}>
-                    <TouchableOpacity style={styles.listItem} onPress={() => {
+        <View style={{ flex: 1,backgroundColor: 'black' }}>
+
+            <HomepageContainer>
+                <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Account & Security</Text>
+            </HomepageContainer>
+            {token !== null && userInformation !== null && <ScrollView style={{ backgroundColor: 'black' }}>
+                <TouchableOpacity style={styles.listItem} onPress={() => {
                     navigation.navigate('ChangeInformationAccount')
                 }}>
                     <View style={{ flexDirection: 'row' }}>
@@ -42,21 +45,21 @@ const AccountSecurity = ({navigation, userInformation}) => {
                         <Ionicons name='person-outline' style={{ color: 'grey', paddingHorizontal: 10, fontSize: 24 }}></Ionicons>
                         <Text style={styles.listItemText}>Email</Text>
                     </View>
-                    <Text style={{color:'white', paddingRight:10, fontWeight:'bold'}}>{userInformation.email}</Text>
+                    <Text style={{ color: 'white', paddingRight: 10, fontWeight: 'bold' }}>{userInformation.email}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.listItem}>
                     <View style={{ flexDirection: 'row' }}>
                         <Ionicons name='person-outline' style={{ color: 'grey', paddingHorizontal: 10, fontSize: 24 }}></Ionicons>
                         <Text style={styles.listItemText}>Username</Text>
                     </View>
-                    <Text style={{color:'white', paddingRight:10, fontWeight:'bold'}}>{userInformation.username}</Text>
+                    <Text style={{ color: 'white', paddingRight: 10, fontWeight: 'bold' }}>{userInformation.username}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.listItem}>
                     <View style={{ flexDirection: 'row' }}>
                         <Feather name='phone' style={{ color: 'grey', paddingHorizontal: 10, fontSize: 24 }}></Feather>
                         <Text style={styles.listItemText}>Phone number</Text>
                     </View>
-                    <Text style={{color:'white', paddingRight:10, fontWeight:'bold'}}>{userInformation.phoneNumber}</Text>
+                    <Text style={{ color: 'white', paddingRight: 10, fontWeight: 'bold' }}>{userInformation.phoneNumber}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.listItem} onPress={() => {
                     navigation.navigate('ChangePassword')
@@ -67,7 +70,7 @@ const AccountSecurity = ({navigation, userInformation}) => {
                     </View>
                     <Ionicons name='chevron-forward' style={{ color: 'white', fontSize: 24 }}></Ionicons>
                 </TouchableOpacity>
-            </ScrollView>
+            </ScrollView>}
         </View>
     );
 }

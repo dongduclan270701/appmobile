@@ -3,8 +3,7 @@ import {
     View,
     StyleSheet,
     TouchableOpacity,
-    Text,
-    AsyncStorage
+    Text
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Formik } from 'formik'
@@ -30,9 +29,10 @@ import {
     TextLinkContent
 } from '../components/styles'
 import { createNewUsers } from '../apis/index'
+import { CommonActions } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const { brand, darkLight } = Colors
-
-const Signup = ({ navigation }) => {
+const Signup = ({ navigation, handleSetLogged }) => {
     const [hidePassword, setHidePassword] = useState(true)
     const [message, setMessage] = useState()
     const [messageType, setMessageType] = useState()
@@ -55,7 +55,17 @@ const Signup = ({ navigation }) => {
                     setMessage(result)
                     setMessageType(type)
                 } else {
-                    navigation.navigate('HomeDrawer', result)
+                    AsyncStorage.setItem('token', result.token);
+                    AsyncStorage.setItem('userInformation', JSON.stringify(result.user));
+                    handleSetLogged(result)
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 1,
+                            routes: [
+                                { name: 'HomeDrawer' },
+                            ],
+                        })
+                    )
                 }
             })
             .catch(error => {

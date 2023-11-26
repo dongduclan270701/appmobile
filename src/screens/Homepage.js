@@ -10,7 +10,7 @@ import {
     Image,
     ActivityIndicator,
     TextInput,
-    Alert,
+    StatusBar,
     TouchableWithoutFeedback
 } from 'react-native';
 import {
@@ -44,8 +44,8 @@ const Homepage = ({ navigation, route, lengthCart }) => {
     const [resultSearch, setResultSearch] = useState([])
     const [isSearch, setIsSearch] = useState(false)
     const [isFilter, setIsFilter] = useState(false)
-    const [brand, setBrand] = useState([])
-    const [category, setCategory] = useState([])
+    const [brand, setBrand] = useState(null)
+    const [category, setCategory] = useState(null)
     const data = route.params
     const data2 = [
         { id: '1', src: require('../../assets/banner-ads4.png') },
@@ -182,6 +182,7 @@ const Homepage = ({ navigation, route, lengthCart }) => {
 
     return (
         <View style={{ backgroundColor: 'black' }}>
+            <StatusBar barStyle="light-content" />
             {isSearch ? <View style={{ height: '100%', paddingBottom: 100 }}>
                 <HomepageContainer>
                     <TouchableOpacity onPress={() => {
@@ -444,6 +445,7 @@ const Homepage = ({ navigation, route, lengthCart }) => {
 
                         <View style={{ alignItems: 'center', marginTop: 30 }}>
                             <TouchableOpacity onPress={() => {
+                                if (brand === null) return 0
                                 const clickedItem = brand.find((item) => item.src === 'laptop');
                                 if (clickedItem) {
                                     setCategory(clickedItem.category);

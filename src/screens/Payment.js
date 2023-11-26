@@ -6,7 +6,8 @@ import {
     StyleSheet,
     ScrollView,
     Image,
-    Alert
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 import {
     HomepageContainer,
@@ -18,11 +19,13 @@ import {
     updateCart,
     createNoticeByCustomer
 } from '../apis/index'
-import { Octicons, Ionicons, Entypo } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons'
+import Modal from "react-native-modal";
 const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart, token, handleChangeNotice, handleChangeOrderList }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [orderCheckOut, setOrderCheckOut] = useState({})
     const [dataCart, setDataCart] = useState([])
+    const [isPayment, setIsPayment] = useState(false)
     useEffect(() => {
         setDataCart(cartData)
         setOrderCheckOut({
@@ -80,6 +83,7 @@ const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart, 
             Alert.alert('Missing', `You don't have product`);
         }
         else {
+            setIsPayment(true)
             const newData = {
                 ...orderCheckOut,
                 shipping_process: [{ time: time, date: today, content: 'Ordered' }],
@@ -120,6 +124,7 @@ const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart, 
                             handleChangeDataCart([])
                             Alert.alert('Successful', `Your order has been created`);
                             navigation.navigate('Homepage')
+                            setIsPayment(false)
                         })
                         .catch(error => {
                             console.log(error)
@@ -143,8 +148,8 @@ const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart, 
                     }} style={{ flexDirection: 'row' }}>
                         <View style={{ flexDirection: 'column' }}>
                             <Text style={{ color: 'white', fontSize: 15, paddingVertical: 5 }}>Địa chỉ nhận hàng</Text>
-                            <Text style={{ color: 'white', fontSize: 15 }}>{userInformation.username} | {userInformation.phoneNumber}</Text>
-                            <Text style={{ color: 'white', fontSize: 15 }}>{userInformation.address}</Text>
+                            <Text style={{ color: 'white', fontSize: 15 }}>{orderCheckOut.username} | {orderCheckOut.phoneNumber}</Text>
+                            <Text style={{ color: 'white', fontSize: 15 }}>{orderCheckOut.address}</Text>
                             <Text style={{ color: 'white', fontSize: 15 }}>{orderCheckOut.commune} {orderCheckOut.district} {orderCheckOut.city}</Text>
                         </View>
                         <Ionicons name='chevron-forward' style={{ color: 'white', padding: 30, fontSize: 24 }}></Ionicons>
@@ -209,6 +214,10 @@ const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart, 
             >
                 <Text style={styles.buyButtonText}>Create Order</Text>
             </TouchableOpacity>
+            {isPayment && <Modal isVisible={isPayment}>
+                <ActivityIndicator size='large' color='white' />
+            </Modal>
+            }
         </View>
 
     );

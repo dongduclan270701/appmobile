@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Colors } from '../components/styles'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -28,11 +28,12 @@ import {
     fetchUserOrderDetails,
     fetchNoticeByCustomer
 } from '../apis/index'
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeDrawer = (props) => {
-    const { cartData, token, userInformation, handleSetLogged, orderList, noticeList, handleChangeStepDefault, handleReadNotice, countOrder } = props
+    const { cartData, token, userInformation, handleSetLogged, orderList, noticeList, handleChangeStepDefault, handleReadNotice, countOrder, refreshing, onRefresh } = props
     const [lengthCart, setLengthCart] = useState([])
     const [lengthNotice, setLengthNotice] = useState([])
     useEffect(() => {
@@ -68,7 +69,7 @@ const HomeDrawer = (props) => {
                     <Ionicons name="laptop-outline" color={color} size={26} />
                 ),
             }} >
-                {({ navigation, route }) => <Product token={token} userInformation={userInformation} navigation={navigation} route={route} />}
+                {({ navigation, route }) => <Product refreshing={refreshing} onRefresh={onRefresh} token={token} userInformation={userInformation} navigation={navigation} route={route} />}
             </Tab.Screen>
             <Tab.Screen name="Notification" options={{
                 tabBarLabel: 'Notification',
@@ -106,6 +107,14 @@ const RootStack = ({ navigation }) => {
         successful: ['Delivery successful'],
         cancel: ['Cancel', 'Delivery failed'],
     }
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 2000);
+    }, []);
     const handleSetLogged = (data) => {
         if (data.token !== null & data.user !== null) {
             setToken(data.token)
@@ -168,12 +177,10 @@ const RootStack = ({ navigation }) => {
         });
         setNoticeList(updatedArray)
     }
-    const handleChangeNotice = (data) => {
-        setNoticeList([data, ...noticeList])
+    const handleChangeNotice = (data1) => {
+        noticeList.unshift(data1)
     }
     const handleChangeOrderList = (data) => {
-        const firstImg = data.product[0].img[0]
-        data.product[0].img = firstImg
         orderList.unshift(data)
         const countOrders = orderList.reduce((accumulator, order) => {
             for (const type in stepStatusMapping) {
@@ -275,12 +282,9 @@ const RootStack = ({ navigation }) => {
                 }}
                 initialRouteName='HomeDrawer'
             >
-                <Stack.Screen name='Login' options={{ headerShown: false }}>
-                    {({ navigation }) => <Login handleSetLogged={handleSetLogged} navigation={navigation} />}
-                </Stack.Screen>
-                <Stack.Screen name='Signup' component={Signup} />
+                
                 <Stack.Screen name='HomeDrawer' options={{ headerShown: false }}>
-                    {() => <HomeDrawer countOrder={countOrder} handleChangeStepDefault={handleChangeStepDefault} handleReadNotice={handleReadNotice} noticeList={noticeList} orderList={orderList} cartData={cartData} token={token} userInformation={userInformation} handleSetLogged={handleSetLogged} handleChangeDataCart={handleChangeDataCart} />}
+                    {() => <HomeDrawer refreshing={refreshing} onRefresh={onRefresh} countOrder={countOrder} handleChangeStepDefault={handleChangeStepDefault} handleReadNotice={handleReadNotice} noticeList={noticeList} orderList={orderList} cartData={cartData} token={token} userInformation={userInformation} handleSetLogged={handleSetLogged} handleChangeDataCart={handleChangeDataCart} />}
                 </Stack.Screen>
                 <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
                 <Stack.Screen name="ProductDetailScreen" >
@@ -297,7 +301,7 @@ const RootStack = ({ navigation }) => {
                 </Stack.Screen>
                 <Stack.Screen name="ApplyDiscount" component={ApplyDiscount} />
                 <Stack.Screen name="AccountSecurity" >
-                    {({ navigation }) => <AccountSecurity userInformation={userInformation} navigation={navigation} />}
+                    {({ navigation }) => <AccountSecurity userInformation={userInformation} navigation={navigation} token={token} />}
                 </Stack.Screen>
                 <Stack.Screen name="ChangeInformationAccount" >
                     {({ navigation }) => <ChangeInformationAccount userInformation={userInformation} token={token} handleChangeInformation={handleChangeInformation} navigation={navigation} />}
@@ -310,6 +314,12 @@ const RootStack = ({ navigation }) => {
                 </Stack.Screen>
                 <Stack.Screen name="OrderDetail" >
                     {({ navigation, route }) => <OrderDetail handleChangeOrderListCancel={handleChangeOrderListCancel} token={token} route={route} handleChangeNotice={handleChangeNotice} userInformation={userInformation} navigation={navigation} />}
+                </Stack.Screen>
+                <Stack.Screen name='Login' >
+                    {({ navigation }) => <Login handleSetLogged={handleSetLogged} navigation={navigation} />}
+                </Stack.Screen>
+                <Stack.Screen name='Signup' >
+                    {({ navigation }) => <Signup handleSetLogged={handleSetLogged} navigation={navigation} />}
                 </Stack.Screen>
             </Stack.Navigator>
         </NavigationContainer>
