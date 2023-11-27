@@ -11,11 +11,11 @@ import {
     ActivityIndicator,
     TextInput,
     StatusBar,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    RefreshControl
 } from 'react-native';
 import {
     HomepageContainer,
-    Logo,
     LineHomePage
 } from '../components/styles'
 import {
@@ -25,7 +25,7 @@ import {
 } from '../apis/index'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RangeSlider from 'rn-range-slider';
-const Homepage = ({ navigation, route, lengthCart }) => {
+const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [laptop, setLaptop] = useState(null)
     const [laptopGaming, setLaptopGaming] = useState(null)
@@ -46,7 +46,7 @@ const Homepage = ({ navigation, route, lengthCart }) => {
     const [isFilter, setIsFilter] = useState(false)
     const [brand, setBrand] = useState(null)
     const [category, setCategory] = useState(null)
-    const data = route.params
+    const [isLoading, setIsLoading] = useState(false)
     const data2 = [
         { id: '1', src: require('../../assets/banner-ads4.png') },
         { id: '2', src: require('../../assets/banner-ads5.png') },
@@ -171,19 +171,33 @@ const Homepage = ({ navigation, route, lengthCart }) => {
     const handleSubmitSearch = () => {
         setIsFilter(false)
         setResultSearch(null)
+        setIsLoading(true);
         fetchFilterProduct(search)
             .then(result => {
                 setResultSearch(result.data)
+                setIsLoading(false)
             })
             .catch(error => {
                 console.log(error)
             })
     }
-
+    const onRefreshSearch = useCallback(() => {
+        setIsLoading(true);
+        setTimeout(() => {
+            fetchFilterProduct(search)
+                .then(result => {
+                    setResultSearch(result.data)
+                    setIsLoading(false)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }, 1000);
+    }, [search]);
     return (
         <View style={{ backgroundColor: 'black' }}>
             <StatusBar barStyle="light-content" />
-            {isSearch ? <View style={{ height: '100%', paddingBottom: 100 }}>
+            {isSearch ? <View style={{ height: '100%', paddingBottom: 100 }} >
                 <HomepageContainer>
                     <TouchableOpacity onPress={() => {
                         setIsSearch(false)
@@ -459,7 +473,7 @@ const Homepage = ({ navigation, route, lengthCart }) => {
                         </View>
                     </>
                     :
-                    <ScrollView >
+                    <View style={{ paddingBottom: 100}}>
                         {resultSearch !== null ? <FlatList
                             data={resultSearch}
                             keyExtractor={(item, index) => index.toString()}
@@ -471,16 +485,23 @@ const Homepage = ({ navigation, route, lengthCart }) => {
                                 </View>
                             )}
                             // ListEmptyComponent
-                            scrollEnabled={false}
-                            numColumns={2} // Số lượng cột
+                            numColumns={2}
                             contentContainerStyle={{ paddingBottom: 10 }}
+                            refreshControl={
+                                <RefreshControl refreshing={isLoading} onRefresh={onRefreshSearch}
+                                    tintColor="white"
+                                />
+                            }
                         />
                             :
-                            <View style={[styles.loading]}>
-                                <ActivityIndicator size='large' color='white' />
-                            </View>
+                            <ScrollView style={{ paddingTop:150 }} refreshControl={
+                                <RefreshControl refreshing={isLoading} onRefresh={onRefreshSearch}
+                                    tintColor="white"
+                                />
+                            }>
+                            </ScrollView>
                         }
-                    </ScrollView>
+                    </View>
                 }
             </View>
                 :
@@ -519,7 +540,11 @@ const Homepage = ({ navigation, route, lengthCart }) => {
                             </TouchableOpacity>
                         </HomepageContainer>
                     </View>
-                    <ScrollView style={{ marginBottom: 150 }}>
+                    <ScrollView style={{ marginBottom: 150 }} refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
+                            tintColor="white"
+                        />
+                    }>
 
                         <View style={styles.category}>
                             <TouchableOpacity style={styles.imageBackground1} onPress={() => {
@@ -595,7 +620,7 @@ const Homepage = ({ navigation, route, lengthCart }) => {
                                 <FlatList
                                     data={laptopGaming}
                                     keyExtractor={(item, index) => index}
-                                    horizontal={true} // Đặt thuộc tính horizontal thành true để lướt ngang
+                                    horizontal={true} 
                                     renderItem={({ item }) => (
                                         <TouchableOpacity onPress={() => {
                                             navigation.navigate("ProductDetailScreen", item)
@@ -621,7 +646,7 @@ const Homepage = ({ navigation, route, lengthCart }) => {
                                 <FlatList
                                     data={laptop}
                                     keyExtractor={(item, index) => index}
-                                    horizontal={true} // Đặt thuộc tính horizontal thành true để lướt ngang
+                                    horizontal={true} 
                                     renderItem={({ item }) => (
                                         <View style={styles.item}>
                                             <Image source={{ uri: item.img[0] }} style={{ width: '100%', height: '50%' }} />
@@ -655,7 +680,7 @@ const Homepage = ({ navigation, route, lengthCart }) => {
                                 <FlatList
                                     data={pcGaming}
                                     keyExtractor={(item, index) => index}
-                                    horizontal={true} // Đặt thuộc tính horizontal thành true để lướt ngang
+                                    horizontal={true} 
                                     renderItem={({ item }) => (
                                         <View style={styles.item}>
                                             <Image source={{ uri: item.img[0] }} style={{ width: '100%', height: '50%' }} />
@@ -710,7 +735,7 @@ const Homepage = ({ navigation, route, lengthCart }) => {
                                 <FlatList
                                     data={pcCompany}
                                     keyExtractor={(item, index) => index}
-                                    horizontal={true} // Đặt thuộc tính horizontal thành true để lướt ngang
+                                    horizontal={true} 
                                     renderItem={({ item }) => (
                                         <View style={styles.item}>
                                             <Image source={{ uri: item.img[0] }} style={{ width: '100%', height: '50%' }} />
@@ -731,7 +756,7 @@ const Homepage = ({ navigation, route, lengthCart }) => {
                                 <FlatList
                                     data={apple}
                                     keyExtractor={(item, index) => index}
-                                    horizontal={true} // Đặt thuộc tính horizontal thành true để lướt ngang
+                                    horizontal={true} 
                                     renderItem={({ item }) => (
                                         <View style={styles.item}>
                                             <Image source={{ uri: item.img[0] }} style={{ width: '100%', height: '50%' }} />
@@ -891,7 +916,7 @@ const styles = StyleSheet.create({
     },
     category: {
         backgroundColor: 'black',
-        flexDirection: 'row', // Sắp xếp các view theo chiều ngang
+        flexDirection: 'row',
     },
     item: {
         width: 200,
@@ -902,7 +927,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#535353',
         margin: 8,
-        borderRadius: 15,
+        borderRadius: 30,
     },
     banner: {
         width: 400,

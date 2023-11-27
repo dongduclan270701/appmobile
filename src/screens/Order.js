@@ -7,17 +7,17 @@ import {
     ScrollView,
     Image,
     TextInput,
-    Alert
+    Alert,
+    RefreshControl
 } from 'react-native';
 import {
-    HomepageContainer,
-    LinePayment
+    HomepageContainer
 } from '../components/styles'
 import {
     EvilIcons,
-    MaterialCommunityIcons,
+    MaterialCommunityIcons
 } from '@expo/vector-icons'
-const Order = ({ navigation, orderList, token, stepDefault }) => {
+const Order = ({ navigation, orderList, token, stepDefault, refreshing, onRefresh }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [searchOrderId, setSearchOrderId] = useState('');
     const [newOrderList, setNewOrderList] = useState(null)
@@ -94,7 +94,10 @@ return (
                     <Text style={[styles.processText, step === 3 && styles.selectedProcessText]}>Cancel</Text>
                 </TouchableOpacity>
             </View>
-            <ScrollView style={{ backgroundColor: 'black', marginBottom: 50 }}>
+            <ScrollView style={{ backgroundColor: 'black', marginBottom: 50 }} refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
+                                tintColor="white"
+                            />}>
                 {newOrderList && newOrderList.map((item, index) => (
                     <TouchableOpacity onPress={() => {
                         navigation.navigate('OrderDetail', { orderId: item.orderId, token: token })

@@ -23,13 +23,9 @@ import {
     fetchRatingOrder
 } from '../apis/index'
 import {
-    Octicons,
-    EvilIcons,
     Ionicons,
     Entypo,
-    AntDesign,
     MaterialCommunityIcons,
-    Feather,
     MaterialIcons
 } from '@expo/vector-icons'
 const { width, height } = Dimensions.get('window');

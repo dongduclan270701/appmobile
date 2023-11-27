@@ -7,9 +7,10 @@ import {
     TouchableOpacity,
     Image,
     ActivityIndicator,
-    Dimensions,
     TouchableWithoutFeedback,
-    TextInput
+    TextInput,
+    RefreshControl,
+    ScrollView,
 } from 'react-native';
 import {
     HomepageContainer
@@ -21,7 +22,7 @@ import {
 } from '../apis/index'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RangeSlider from 'rn-range-slider';
-const { width, height } = Dimensions.get('window');
+import Toast from 'react-native-toast-message';
 const ProductListScreen = ({ navigation, route }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const data = route.params
@@ -36,7 +37,8 @@ const ProductListScreen = ({ navigation, route }) => {
         maxPrice: 90000000
     })
     const [category, setCategory] = useState(null)
-
+    const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(true);
     const handleValueChange = useCallback(
         (newLow, newHigh) => {
             setSearch((search) => ({
@@ -120,17 +122,24 @@ const ProductListScreen = ({ navigation, route }) => {
                 }
             })
             .catch(error => {
-                console.log(error)
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
             })
         fetchProductCollection({ category: search.category, collection: data.category }, 1)
             .then(result => {
                 setGoods(result.data)
             })
             .catch(error => {
-                console.log(error)
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
             })
-    }, [data]);
-
+    }, [data])
     const handleSubmitSearch = () => {
         setIsFilter(false)
         setGoods(null)
@@ -142,6 +151,23 @@ const ProductListScreen = ({ navigation, route }) => {
                 console.log(error)
             })
     }
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            fetchProductCollection({ category: search.category, collection: data.category }, 1)
+                .then(result => {
+                    setGoods(result.data)
+                    setRefreshing(false);
+                })
+                .catch(error => {
+                    Toast.show({
+                        type: 'error',
+                        text1: error.message,
+                        position: 'bottom'
+                    });
+                })
+        }, 1000);
+    }, [search]);
     return (
         <View style={{ backgroundColor: 'black', flex: 1 }}>
             <HomepageContainer>
@@ -365,10 +391,10 @@ const ProductListScreen = ({ navigation, route }) => {
                         )}
                         onValueChanged={handleValueChange}
                     />
-                    <View style={{ alignItems: 'center', marginTop:30 }}>
+                    <View style={{ alignItems: 'center', marginTop: 30 }}>
                         <TouchableOpacity onPress={() => {
                             if (category === null) return 0
-                            setSearch({ ...search, minPrice: 0, maxPrice: 90000000, nameProduct: '', category:[category[0].collecting[0].name, '', '', '', ''] })
+                            setSearch({ ...search, minPrice: 0, maxPrice: 90000000, nameProduct: '', category: [category[0].collecting[0].name, '', '', '', ''] })
                         }}>
                             <View style={styles.itemClear}>
                                 <Text style={styles.textClear}>Clear </Text>
@@ -392,11 +418,22 @@ const ProductListScreen = ({ navigation, route }) => {
                         numColumns={2}
                         contentContainerStyle={styles.container}
                         columnWrapperStyle={{ justifyContent: 'space-between' }}
-                    /> : <View style={[styles.loading, { width, height }]}>
-                        <ActivityIndicator size='large' color='white' />
-                    </View>}
+                        refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
+                                tintColor="white"
+                            />
+                        }
+                    />
+                        :
+                        <ScrollView style={{ paddingBottom: 220 }} refreshControl={
+                            <RefreshControl refreshing={loading} onRefresh={onRefresh}
+                                tintColor="white"
+                            />
+                        }>
+                        </ScrollView>
+                    }
                 </View>}
-
+                <Toast />
         </View>
     );
 }

@@ -5,7 +5,7 @@ import {
     Text,
     ScrollView,
     TouchableOpacity,
-    Image
+    RefreshControl
 } from 'react-native';
 import {
     HomepageContainer
@@ -13,14 +13,10 @@ import {
 import {
     Octicons,
     Ionicons,
-    Entypo,
-    AntDesign,
-    MaterialCommunityIcons,
     Feather,
-    MaterialIcons
 } from '@expo/vector-icons'
 
-const AccountSecurity = ({ navigation, userInformation, token }) => {
+const AccountSecurity = ({ navigation, userInformation, token, refreshing, onRefresh }) => {
     useEffect(() => {
         if (token === null) return navigation.navigate('Login')
     }, [token]);
@@ -30,7 +26,10 @@ const AccountSecurity = ({ navigation, userInformation, token }) => {
             <HomepageContainer>
                 <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Account & Security</Text>
             </HomepageContainer>
-            {token !== null && userInformation !== null && <ScrollView style={{ backgroundColor: 'black' }}>
+            {token !== null && userInformation !== null && <ScrollView style={{ backgroundColor: 'black' }} refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
+                                tintColor="white"
+                            />}>
                 <TouchableOpacity style={styles.listItem} onPress={() => {
                     navigation.navigate('ChangeInformationAccount')
                 }}>

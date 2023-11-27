@@ -6,18 +6,16 @@ import {
     StyleSheet,
     ScrollView,
     Image,
-    TextInput,
-    Alert
+    RefreshControl
 } from 'react-native';
 import {
-    HomepageContainer,
-    LinePayment
+    HomepageContainer
 } from '../components/styles'
 
 import {
     fetchUpdateNotice
 } from '../apis/index'
-const Notification = ({ navigation, lengthNotice, token, userInformation, handleReadNotice }) => {
+const Notification = ({ navigation, lengthNotice, token, userInformation, handleReadNotice, refreshing, onRefresh }) => {
     const [listNotice, setListNotice] = useState(null)
     useEffect(() => {
         if (token === null) return navigation.navigate('Login')
@@ -48,7 +46,10 @@ const Notification = ({ navigation, lengthNotice, token, userInformation, handle
             <HomepageContainer>
                 <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Notification</Text>
             </HomepageContainer>
-            {token !== null && <ScrollView style={{ backgroundColor: 'black' }}>
+            {token !== null && <ScrollView style={{ backgroundColor: 'black' }} refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
+                                tintColor="white"
+                            />}>
                 {listNotice && listNotice.map((item, index) => (
                     <TouchableOpacity onPress={() => {
                         handleReadNoticeCus(item._id, item.isReadCus)

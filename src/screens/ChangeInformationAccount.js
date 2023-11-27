@@ -11,8 +11,6 @@ import {
     ActivityIndicator,
     Button
 } from 'react-native';
-import axios from 'axios';
-import { Formik } from 'formik';
 import { Picker } from '@react-native-picker/picker';
 import {
     updateUser

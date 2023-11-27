@@ -61,7 +61,7 @@ const HomeDrawer = (props) => {
                     <Ionicons name="home" color={color} size={26} />
                 ),
             }} >
-                {({ navigation, route }) => <Homepage token={token} lengthCart={lengthCart} userInformation={userInformation} navigation={navigation} route={route} />}
+                {({ navigation, route }) => <Homepage refreshing={refreshing} onRefresh={onRefresh} token={token} lengthCart={lengthCart} userInformation={userInformation} navigation={navigation} route={route} />}
             </Tab.Screen>
             <Tab.Screen name="Product" options={{
                 tabBarLabel: 'Product',
@@ -78,7 +78,7 @@ const HomeDrawer = (props) => {
                 ),
                 tabBarBadge: lengthNotice ? lengthNotice.filter(item => item.isReadCus === false).length > 99 ? '99+' : lengthNotice.filter(item => item.isReadCus === false).length : 0
             }} >
-                {({ navigation, route }) => <Notification handleReadNotice={handleReadNotice} lengthNotice={lengthNotice} token={token} userInformation={userInformation} navigation={navigation} route={route} />}
+                {({ navigation, route }) => <Notification refreshing={refreshing} onRefresh={onRefresh} handleReadNotice={handleReadNotice} lengthNotice={lengthNotice} token={token} userInformation={userInformation} navigation={navigation} route={route} />}
             </Tab.Screen>
             < Tab.Screen name="User" options={{
                 tabBarLabel: 'User',
@@ -86,7 +86,7 @@ const HomeDrawer = (props) => {
                     <Ionicons name="person" color={color} size={26} />
                 ),
             }} >
-                {({ navigation, route }) => <User countOrder={countOrder} orderList={orderList} handleChangeStepDefault={handleChangeStepDefault} token={token} userInformation={userInformation} navigation={navigation} route={route} handleSetLogged={handleSetLogged} />}
+                {({ navigation, route }) => <User refreshing={refreshing} onRefresh={onRefresh} countOrder={countOrder} orderList={orderList} handleChangeStepDefault={handleChangeStepDefault} token={token} userInformation={userInformation} navigation={navigation} route={route} handleSetLogged={handleSetLogged} />}
             </Tab.Screen>
         </Tab.Navigator >
     )
@@ -108,9 +108,57 @@ const RootStack = ({ navigation }) => {
         cancel: ['Cancel', 'Delivery failed'],
     }
     const [refreshing, setRefreshing] = useState(false);
-
+    const getData = async () => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            setToken(token)
+            const userInf = await AsyncStorage.getItem('userInformation');
+            // setUserInformation(JSON.parse(userInf))
+            fetchSyncUser(token)
+                .then(result => {
+                    setUserInformation(result)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            fetchCartUser(JSON.parse(userInf)[0], token)
+                .then(result => {
+                    setCartData(result.product)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            fetchUserOrderDetails(JSON.parse(userInf)[0], token)
+                .then(result => {
+                    setOrderList(result.orders)
+                    const countOrders = result.orders.reduce((accumulator, order) => {
+                        for (const type in stepStatusMapping) {
+                            if (stepStatusMapping[type].includes(order.status)) {
+                                accumulator[type] += 1
+                                break
+                            }
+                        }
+                        return accumulator;
+                    }, { processing: 0, delivery: 0, successful: 0, cancel: 0 })
+                    setCountOrder(countOrders);
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            fetchNoticeByCustomer(JSON.parse(userInf)[0], token)
+                .then(result => {
+                    setNoticeList(result)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            return value
+        } catch (error) {
+        }
+    };
     const onRefresh = useCallback(() => {
         setRefreshing(true);
+        getData()
         setTimeout(() => {
             setRefreshing(false);
         }, 2000);
@@ -215,56 +263,7 @@ const RootStack = ({ navigation }) => {
         setOrderList(updatedArray)
     }
     useEffect(() => {
-        const getData = async () => {
-            try {
-                const token = await AsyncStorage.getItem('token');
-                setToken(token)
-                const userInf = await AsyncStorage.getItem('userInformation');
-                // setUserInformation(JSON.parse(userInf))
-                fetchSyncUser(token)
-                    .then(result => {
-                        setUserInformation(result)
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-                fetchCartUser(JSON.parse(userInf)[0], token)
-                    .then(result => {
-                        setCartData(result.product)
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-                fetchUserOrderDetails(JSON.parse(userInf)[0], token)
-                    .then(result => {
-                        setOrderList(result.orders)
-                        const countOrders = result.orders.reduce((accumulator, order) => {
-                            for (const type in stepStatusMapping) {
-                                if (stepStatusMapping[type].includes(order.status)) {
-                                    accumulator[type] += 1
-                                    break
-                                }
-                            }
-                            return accumulator;
-                        }, { processing: 0, delivery: 0, successful: 0, cancel: 0 })
-                        setCountOrder(countOrders);
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-                fetchNoticeByCustomer(JSON.parse(userInf)[0], token)
-                    .then(result => {
-                        setNoticeList(result)
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-                return value
-            } catch (error) {
-            }
-        };
         getData()
-
     }, []);
     return (
         <NavigationContainer>
@@ -301,7 +300,7 @@ const RootStack = ({ navigation }) => {
                 </Stack.Screen>
                 <Stack.Screen name="ApplyDiscount" component={ApplyDiscount} />
                 <Stack.Screen name="AccountSecurity" >
-                    {({ navigation }) => <AccountSecurity userInformation={userInformation} navigation={navigation} token={token} />}
+                    {({ navigation }) => <AccountSecurity refreshing={refreshing} onRefresh={onRefresh} userInformation={userInformation} navigation={navigation} token={token} />}
                 </Stack.Screen>
                 <Stack.Screen name="ChangeInformationAccount" >
                     {({ navigation }) => <ChangeInformationAccount userInformation={userInformation} token={token} handleChangeInformation={handleChangeInformation} navigation={navigation} />}
@@ -310,7 +309,7 @@ const RootStack = ({ navigation }) => {
                     {({ navigation }) => <ChangePassword userInformation={userInformation} token={token} navigation={navigation} />}
                 </Stack.Screen>
                 <Stack.Screen name="Order" >
-                    {({ navigation }) => <Order orderList={orderList} stepDefault={stepDefault} token={token} navigation={navigation} />}
+                    {({ navigation }) => <Order refreshing={refreshing} onRefresh={onRefresh} orderList={orderList} stepDefault={stepDefault} token={token} navigation={navigation} />}
                 </Stack.Screen>
                 <Stack.Screen name="OrderDetail" >
                     {({ navigation, route }) => <OrderDetail handleChangeOrderListCancel={handleChangeOrderListCancel} token={token} route={route} handleChangeNotice={handleChangeNotice} userInformation={userInformation} navigation={navigation} />}
