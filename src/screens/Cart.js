@@ -6,46 +6,20 @@ import {
     StyleSheet,
     ScrollView,
     Image,
-    Alert
+    ActivityIndicator
 } from 'react-native';
 import {
     HomepageContainer
 } from '../components/styles'
 import {
-    fetchBestLaptop,
     updateCart
 } from '../apis/index'
+import Toast from 'react-native-toast-message';
+import Modal from "react-native-modal";
 const Cart = ({ navigation, cartData, handleChangeDataCart, userInformation, token }) => {
     const formatter = new Intl.NumberFormat('en-US')
-    // const [dataCart, setDataCart] = useState({
-    //     "product": [
-    //         {
-    //             "_id": "650afa0a82ae198eca8a6a0c",
-    //             "img": [
-    //                 "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-    //                 "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-    //             ],
-    //             quantity: 1,
-    //             "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-    //             "realPrice": 18999000,
-    //             "nowPrice": 17190000,
-    //             "collection": "laptop",
-    //         },
-    //         {
-    //             "_id": "650afa0a82ae198eca8a6a0c",
-    //             "img": [
-    //                 "https://res.cloudinary.com/dolydpat4/image/upload/v1695301949/nifrn7kzljhac6xp70zk.webp",
-    //                 "https://res.cloudinary.com/dolydpat4/image/upload/v1695301950/q9y0mdz3fohhsvrsflqg.webp"
-    //             ],
-    //             quantity: 1,
-    //             "nameProduct": "Laptop ASUS Vivobook S 14 Flip TN3402YA LZ192W",
-    //             "realPrice": 18999000,
-    //             "nowPrice": 17190000,
-    //             "collection": "laptop",
-    //         },
-    //     ],
-    // })
     const [dataCart, setDataCart] = useState([])
+    const [isDelete, setIsDelete] = useState(false)
     useEffect(() => {
         setDataCart(cartData)
     }, [cartData]);
@@ -62,20 +36,35 @@ const Cart = ({ navigation, cartData, handleChangeDataCart, userInformation, tok
                     setDataCart(updatedDataCart);
                 })
                 .catch(error => {
-                    console.log(error)
+                    
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 })
         }
     };
     const handleRemoveItem = (index) => {
+        setIsDelete(true)
         const updatedDataCart = [...dataCart]
         updatedDataCart.splice(index, 1)
         updateCart(userInformation.email, updatedDataCart, token)
             .then(result => {
                 setDataCart(updatedDataCart);
-                Alert.alert('Successful!', `Remove product successful`);
+                setIsDelete(false)
+                Toast.show({
+                    type: 'success',
+                    text1: 'Remove product successful',
+                    position: 'bottom'
+                });
             })
             .catch(error => {
-                console.log(error)
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
             })
         handleChangeDataCart(updatedDataCart)
     };
@@ -126,6 +115,11 @@ const Cart = ({ navigation, cartData, handleChangeDataCart, userInformation, tok
                     <Text style={styles.buyButtonText}>Payment</Text>
                 </TouchableOpacity>
             </View>
+            {isDelete && <Modal isVisible={isDelete}>
+                <ActivityIndicator size='large' color='white' />
+            </Modal>
+            }
+            <Toast/>
         </View>
 
     );

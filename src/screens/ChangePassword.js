@@ -6,12 +6,12 @@ import {
     StyleSheet,
     ScrollView,
     TextInput,
-    Alert,
     ActivityIndicator
 } from 'react-native';
 import {
     updatePasswordUser
 } from '../apis/index'
+import Toast from 'react-native-toast-message';
 const ChangePassword = ({ navigation, userInformation, token }) => {
     const [values, setValues] = useState({ oldPassword: '', newPassword: '', reNewPassword: '' })
     const [isLoading, setIsLoading] = useState(false)
@@ -24,27 +24,56 @@ const ChangePassword = ({ navigation, userInformation, token }) => {
     const handleSubmitChangePassword = () => {
         const re = /[A-Z]/
         if (values.oldPassword === '') {
-            Alert.alert('Missing', `You need to fill your password `);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, You need to fill your password',
+                position: 'bottom'
+            });
         } else if (values.newPassword === '') {
-            Alert.alert('Missing', `You need to fill your new password`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, You need to fill your new password',
+                position: 'bottom'
+            });
         } else if (values.reNewPassword === '') {
-            Alert.alert('Missing', `You need to fill your renew password`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, You need to fill your renew password',
+                position: 'bottom'
+            });
         } else if (values.reNewPassword !== values.newPassword) {
-            Alert.alert('Incorrect', `Your renew password incorrect`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, Your renew password incorrect',
+                position: 'bottom'
+            });
         } else if (values.newPassword.length < 8 || !re.test(values.newPassword)) {
-            Alert.alert('Incorrect', `New password must be at least 8 characters or more and contain capital letters!`);
+            Toast.show({
+                type: 'info',
+                text1: 'Incorrect, New password must be at least 8 characters or more and contain capital letters!',
+                position: 'bottom'
+            });
         } else {
             updatePasswordUser(userInformation._id, { ...userInformation, oldPassword: values.oldPassword, newPassword: values.newPassword }, token)
                 .then(result => {
                     if (result === 'Password incorrect') {
-                        Alert.alert('Incorrect', `Your password incorrect`);
+                        Toast.show({
+                            type: 'info',
+                            text1: 'Incorrect, Your password incorrect',
+                            position: 'bottom'
+                        });
                     } else {
                         navigation.goBack()
                     }
 
                 })
                 .catch(error => {
-                    console.log(error)
+
+                    Toast.show({
+                        type: 'error',
+                        text1: error.message,
+                        position: 'bottom'
+                    });
                 })
         }
     }
@@ -99,6 +128,7 @@ const ChangePassword = ({ navigation, userInformation, token }) => {
                     <Text style={styles.buyButtonText}>Save</Text>
                 </TouchableOpacity>
             }
+            <Toast />
         </View>
     );
 }

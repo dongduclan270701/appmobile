@@ -6,14 +6,14 @@ import {
     StyleSheet,
     ScrollView,
     TextInput,
-    Alert,
     Button
 } from 'react-native';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import Modal from "react-native-modal";
+import Toast from 'react-native-toast-message';
 const PaymentInformation = ({ navigation, route }) => {
-    const [values, setValues] = useState({ username: '', phoneNumber: '', address: '', city: '', district: '', commune: '' })
+    const [values, setValues] = useState({ username: '', phoneNumber: null, address: '', city: '', district: '', commune: '' })
     const [cityData, setCityData] = useState([]);
     const [districtData, setDistrictData] = useState([]);
     const [communeData, setCommuneData] = useState([]);
@@ -38,7 +38,12 @@ const PaymentInformation = ({ navigation, route }) => {
                         setCityData(result.data)
                     })
             } catch (error) {
-                console.log(error)
+
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
             }
         }
         getCity()
@@ -72,19 +77,47 @@ const PaymentInformation = ({ navigation, route }) => {
 
     const handleSaveInformation = () => {
         if (values.username === '') {
-            Alert.alert('Missing', `Fill your username`);
-        } else if (values.phoneNumber.length === 0) {
-            Alert.alert('Missing', `Fill your phone number`);
-        } else if (values.phoneNumber.length !== 10) {
-            Alert.alert('Missing', `Your phone number incorrect format`);
+            Toast.show({
+                type: 'info',
+                text1: `Missing, Fill your username`,
+                position: 'bottom'
+            });
+        } else if (values.phoneNumber === null || values.phoneNumber.length === 0) {
+            Toast.show({
+                type: 'info',
+                text1: `Missing, Fill your phone number`,
+                position: 'bottom'
+            });
+        } else if (values.phoneNumber.length !== 10 ) {
+            Toast.show({
+                type: 'info',
+                text1: `Missing, Your phone number incorrect format`,
+                position: 'bottom'
+            });
         } else if (values.address === '') {
-            Alert.alert('Missing', `Fill your address`);
+            Toast.show({
+                type: 'info',
+                text1: `Missing, Fill your address`,
+                position: 'bottom'
+            });
         } else if (values.city === '') {
-            Alert.alert('Missing', `Fill your city`);
+            Toast.show({
+                type: 'info',
+                text1: `Missing, Fill your city`,
+                position: 'bottom'
+            });
         } else if (values.district === '') {
-            Alert.alert('Missing', `Fill your district`);
+            Toast.show({
+                type: 'info',
+                text1: `Missing, Fill your district`,
+                position: 'bottom'
+            });
         } else if (values.commune === '') {
-            Alert.alert('Missing', `Fill your commune`);
+            Toast.show({
+                type: 'info',
+                text1: `Missing, Fill your commune`,
+                position: 'bottom'
+            });
         } else {
             route.params.handleChangeInformation(values)
             navigation.goBack()
@@ -224,6 +257,7 @@ const PaymentInformation = ({ navigation, route }) => {
             >
                 <Text style={styles.buyButtonText}>Save</Text>
             </TouchableOpacity>
+            <Toast/>
         </View>
     );
 }

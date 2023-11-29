@@ -7,7 +7,6 @@ import {
     ScrollView,
     TextInput,
     Image,
-    Alert,
     ActivityIndicator,
     Button
 } from 'react-native';
@@ -16,6 +15,7 @@ import {
     updateUser
 } from '../apis/index'
 import Modal from "react-native-modal";
+import Toast from 'react-native-toast-message';
 const Payment = ({ navigation, userInformation, handleChangeInformation, token }) => {
     const [values, setValues] = useState({ username: '', phoneNumber: '', address: '', sex: '', age: '' })
     const [showSex, setShowSex] = useState(false)
@@ -31,23 +31,55 @@ const Payment = ({ navigation, userInformation, handleChangeInformation, token }
     }
     const handleSubmitChangeInformation = () => {
         if (values.age === '') {
-            Alert.alert('Missing', `You need to edit your age`);
-        } else if (values.sex === '') {
-            Alert.alert('Missing', `You need to edit your sex`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, You need to edit your age ',
+                position: 'bottom'
+            });
+        } else if (values.sex === '' || values.sex === undefined || values.sex === null) {
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, You need to edit your sex ',
+                position: 'bottom'
+            });
+        } else if (values.phoneNumber === null || values.phoneNumber.length === 0) {
+            Toast.show({
+                type: 'info',
+                text1: `Missing, Fill your phone number`,
+                position: 'bottom'
+            });
+        } else if (values.phoneNumber.length !== 10 ) {
+            Toast.show({
+                type: 'info',
+                text1: `Missing, Your phone number incorrect format`,
+                position: 'bottom'
+            });
         } else if (values.username === '') {
-            Alert.alert('Missing', `You need to edit your username`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, You need to edit your username ',
+                position: 'bottom'
+            });
         } else if (values.address === '') {
-            Alert.alert('Missing', `You need to edit your address`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, You need to edit your address ',
+                position: 'bottom'
+            });
         } else {
             setIsLoading(true)
             updateUser(values._id, values, token)
                 .then(result => {
                     handleChangeInformation(result)
-
                     navigation.goBack()
                 })
                 .catch(error => {
-                    console.log(error)
+
+                    Toast.show({
+                        type: 'error',
+                        text1: error.message,
+                        position: 'bottom'
+                    });
                 })
         }
     }
@@ -156,6 +188,7 @@ const Payment = ({ navigation, userInformation, handleChangeInformation, token }
                     <Text style={styles.buyButtonText}>Save</Text>
                 </TouchableOpacity>
             }
+            <Toast />
         </View>
     );
 }

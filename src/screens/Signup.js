@@ -29,6 +29,7 @@ import {
 import { createNewUsers } from '../apis/index'
 import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Toast from 'react-native-toast-message';
 const { brand, darkLight } = Colors
 const Signup = ({ navigation, handleSetLogged }) => {
     const [hidePassword, setHidePassword] = useState(true)
@@ -67,7 +68,12 @@ const Signup = ({ navigation, handleSetLogged }) => {
                 }
             })
             .catch(error => {
-                console.log(error.response)
+                
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 setSubmitting(false)
             })
     }
@@ -172,6 +178,7 @@ const Signup = ({ navigation, handleSetLogged }) => {
                     )}
                 </Formik>
             </InnerContainer>
+            <Toast/>
         </StyledContainer>
     );
 }

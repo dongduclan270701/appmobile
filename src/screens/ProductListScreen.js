@@ -148,7 +148,12 @@ const ProductListScreen = ({ navigation, route }) => {
                 setGoods(result.data)
             })
             .catch(error => {
-                console.log(error)
+                
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
             })
     }
     const onRefresh = useCallback(() => {

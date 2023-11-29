@@ -25,6 +25,8 @@ import {
 } from '../apis/index'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RangeSlider from 'rn-range-slider';
+import Toast from 'react-native-toast-message';
+                
 const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [laptop, setLaptop] = useState(null)
@@ -62,8 +64,7 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
         { id: '2', src: require('../../assets/banner-ads2.webp') },
         { id: '3', src: require('../../assets/banner-ads3.webp') },
     ];
-
-    useEffect(() => {
+    const fetchData = () => {
         fetchCollecting()
             .then(result => {
                 setBrand(result)
@@ -71,7 +72,12 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
                 setCategory(result[0].category)
             })
             .catch(error => {
-                console.log(error)
+                
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
             })
         fetchBestLaptop()
             .then(result => {
@@ -83,9 +89,16 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
                 setApple(result.resultBestApple)
             })
             .catch(error => {
-                console.log(error)
+                
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
             })
-
+    }
+    useEffect(() => {
+        fetchData()
     }, []);
 
     const handleValueChange = useCallback(
@@ -178,7 +191,12 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
                 setIsLoading(false)
             })
             .catch(error => {
-                console.log(error)
+                
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
             })
     }
     const onRefreshSearch = useCallback(() => {
@@ -190,10 +208,19 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
                     setIsLoading(false)
                 })
                 .catch(error => {
-                    console.log(error)
+                    
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 })
         }, 1000);
     }, [search]);
+    const handleOnRefresh = () => {
+        onRefresh()
+        fetchData()
+    }
     return (
         <View style={{ backgroundColor: 'black' }}>
             <StatusBar barStyle="light-content" />
@@ -541,7 +568,7 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
                         </HomepageContainer>
                     </View>
                     <ScrollView style={{ marginBottom: 150 }} refreshControl={
-                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
+                        <RefreshControl refreshing={refreshing} onRefresh={handleOnRefresh}
                             tintColor="white"
                         />
                     }>
@@ -786,6 +813,7 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
                     </ScrollView>
                 </>
             }
+            <Toast/>
         </View>
     );
 }

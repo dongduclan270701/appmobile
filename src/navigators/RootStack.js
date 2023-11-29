@@ -22,6 +22,7 @@ import Notification from '../screens/Notification'
 import Order from '../screens/Order'
 import OrderDetail from '../screens/OrderDetail'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
 import {
     fetchCartUser,
     fetchSyncUser,
@@ -119,14 +120,24 @@ const RootStack = ({ navigation }) => {
                     setUserInformation(result)
                 })
                 .catch(error => {
-                    console.log(error)
+                    
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 })
             fetchCartUser(JSON.parse(userInf)[0], token)
                 .then(result => {
                     setCartData(result.product)
                 })
                 .catch(error => {
-                    console.log(error)
+                    
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 })
             fetchUserOrderDetails(JSON.parse(userInf)[0], token)
                 .then(result => {
@@ -143,14 +154,24 @@ const RootStack = ({ navigation }) => {
                     setCountOrder(countOrders);
                 })
                 .catch(error => {
-                    console.log(error)
+                    
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 })
             fetchNoticeByCustomer(JSON.parse(userInf)[0], token)
                 .then(result => {
                     setNoticeList(result)
                 })
                 .catch(error => {
-                    console.log(error)
+                    
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 })
             return value
         } catch (error) {
@@ -172,7 +193,12 @@ const RootStack = ({ navigation }) => {
                     setCartData(result.product)
                 })
                 .catch(error => {
-                    console.log(error)
+                    
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 })
             fetchUserOrderDetails(data.user[0], data.token)
                 .then(result => {
@@ -189,14 +215,24 @@ const RootStack = ({ navigation }) => {
                     setCountOrder(countOrders);
                 })
                 .catch(error => {
-                    console.log(error)
+                    
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 })
             fetchNoticeByCustomer(data.user[0], data.token)
                 .then(result => {
                     setNoticeList(result)
                 })
                 .catch(error => {
-                    console.log(error)
+                    
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 })
         } else {
             AsyncStorage.removeItem('token');
@@ -244,8 +280,7 @@ const RootStack = ({ navigation }) => {
     const handleChangeOrderListCancel = (data) => {
         const updatedArray = orderList.map(item => {
             if (item.orderId === data.orderId) {
-                const firstImg = data.product[0].img[0]
-                data.product[0].img = firstImg
+                item = data
                 return data
             }
             return item
@@ -321,6 +356,7 @@ const RootStack = ({ navigation }) => {
                     {({ navigation }) => <Signup handleSetLogged={handleSetLogged} navigation={navigation} />}
                 </Stack.Screen>
             </Stack.Navigator>
+            <Toast/>
         </NavigationContainer>
     )
 }

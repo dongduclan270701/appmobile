@@ -7,7 +7,6 @@ import {
     ScrollView,
     Image,
     TextInput,
-    Alert,
     RefreshControl
 } from 'react-native';
 import {
@@ -17,6 +16,7 @@ import {
     EvilIcons,
     MaterialCommunityIcons
 } from '@expo/vector-icons'
+import Toast from 'react-native-toast-message';
 const Order = ({ navigation, orderList, token, stepDefault, refreshing, onRefresh }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [searchOrderId, setSearchOrderId] = useState('');
@@ -36,7 +36,11 @@ const Order = ({ navigation, orderList, token, stepDefault, refreshing, onRefres
         if (foundOrders.length > 0) {
             setNewOrderList([...foundOrders])
         } else {
-            Alert.alert('Order Not Found', `Order ID ${searchOrderId} was not found.`);
+            Toast.show({
+                type: 'info',
+                text1: `Order Not Found, Order ID ${searchOrderId} was not found.`,
+                position: 'bottom'
+            });
         }
     };
     useEffect(() => {
@@ -130,6 +134,7 @@ return (
             </ScrollView>
         </>
         }
+        <Toast/>
     </View>
 );
 }

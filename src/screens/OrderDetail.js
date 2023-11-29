@@ -9,7 +9,6 @@ import {
     ActivityIndicator,
     Dimensions,
     TextInput,
-    Alert
 } from 'react-native';
 import {
     HomepageContainer,
@@ -28,6 +27,8 @@ import {
     MaterialCommunityIcons,
     MaterialIcons
 } from '@expo/vector-icons'
+import Toast from 'react-native-toast-message';
+import Modal from "react-native-modal";
 const { width, height } = Dimensions.get('window');
 const OrderDetail = ({ navigation, userInformation, route, token, handleChangeNotice, handleChangeOrderListCancel }) => {
     const formatter = new Intl.NumberFormat('en-US')
@@ -35,6 +36,7 @@ const OrderDetail = ({ navigation, userInformation, route, token, handleChangeNo
     const [isReview, setIsReview] = useState(false)
     const [isCancel, setIsCancel] = useState(false)
     const [listGoodsReview, setListGoodsReview] = useState(null)
+    const [isSubmitCancel, setIsSubmitCancel] = useState(false)
     const date = new Date();
     const minutes = date.getMinutes();
     const hours = date.getHours();
@@ -62,13 +64,19 @@ const OrderDetail = ({ navigation, userInformation, route, token, handleChangeNo
                 })
             })
             .catch(error => {
-                console.log(error)
+
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
             })
     }, [route.params]);
     const handleChangeReasonCancel = (data) => {
         setDataCart({ ...dataCart, reasonCancel: data })
     }
     const handleSubmitCancelOrder = () => {
+        setIsSubmitCancel(true)
         const newOrder = {
             ...dataCart,
             status: 'Cancel',
@@ -104,8 +112,20 @@ const OrderDetail = ({ navigation, userInformation, route, token, handleChangeNo
                         })
                     })
                     .catch(error => {
-                        console.log(error)
+
+                        Toast.show({
+                            type: 'error',
+                            text1: error.message,
+                            position: 'bottom'
+                        });
                     })
+                Toast.show({
+                    type: 'success',
+                    text1: 'Order has been cancel',
+                    position: 'bottom'
+                });
+                setIsCancel(false)
+                setIsSubmitCancel(false)
                 setDataCart(result)
                 handleChangeOrderListCancel(newOrder)
             })
@@ -113,12 +133,17 @@ const OrderDetail = ({ navigation, userInformation, route, token, handleChangeNo
     const handleSubmitReview = () => {
         const test = listGoodsReview.product.map((item) => item.star === 0)
         if (test.includes(true)) {
-            Alert.alert('Missing', `It looks like you haven't evaluated all the products in your order!`);
+            Toast.show({
+                type: 'info',
+                text1: `Missing, It looks like you haven't evaluated all the products in your order!`,
+                position: 'bottom'
+            });
         }
         else {
+            setIsSubmitCancel(true)
             fetchRatingOrder(dataCart.orderId, { ...listGoodsReview, date: today, time: time }, token)
                 .then(result => {
-                    
+
                     setDataCart({ ...dataCart, statusReview: { ...listGoodsReview, date: today, time: time } })
                     createNoticeByCustomer({
                         product: dataCart.product[0],
@@ -131,6 +156,7 @@ const OrderDetail = ({ navigation, userInformation, route, token, handleChangeNo
                         createDate: today
                     }, token)
                         .then(result1 => {
+                            setIsSubmitCancel(false)
                             setIsReview(false)
                             handleChangeNotice({
                                 product: dataCart.product[0],
@@ -145,11 +171,21 @@ const OrderDetail = ({ navigation, userInformation, route, token, handleChangeNo
                             })
                         })
                         .catch(error => {
-                            console.log(error)
+
+                            Toast.show({
+                                type: 'error',
+                                text1: error.message,
+                                position: 'bottom'
+                            });
                         })
                 })
                 .catch(error => {
-                    console.log(error)
+
+                    Toast.show({
+                        type: 'error',
+                        text1: error.message,
+                        position: 'bottom'
+                    });
                 })
         }
     }
@@ -348,7 +384,7 @@ const OrderDetail = ({ navigation, userInformation, route, token, handleChangeNo
                     <ScrollView style={{ backgroundColor: 'black' }}>
                         <TextInput
                             style={styles.searchInput}
-                            placeholder="Enter Order ID"
+                            placeholder="Your reason"
                             placeholderTextColor="gray"
                             onChangeText={text => handleChangeReasonCancel(text)}
                             value={dataCart.reasonCancel}
@@ -365,7 +401,6 @@ const OrderDetail = ({ navigation, userInformation, route, token, handleChangeNo
                     <TouchableOpacity
                         style={styles.submitButton}
                         onPress={() => {
-                            setIsCancel(false)
                             handleSubmitCancelOrder()
                         }}
                     >
@@ -477,7 +512,11 @@ const OrderDetail = ({ navigation, userInformation, route, token, handleChangeNo
                     <ActivityIndicator size='large' color='white' />
                 </View>
             }
-
+            {isSubmitCancel && <Modal isVisible={isSubmitCancel}>
+                <ActivityIndicator size='large' color='white' />
+            </Modal>
+            }
+            <Toast />
         </View>
 
     );

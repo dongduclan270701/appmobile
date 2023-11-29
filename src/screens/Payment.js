@@ -6,7 +6,6 @@ import {
     StyleSheet,
     ScrollView,
     Image,
-    Alert,
     ActivityIndicator
 } from 'react-native';
 import {
@@ -21,6 +20,7 @@ import {
 } from '../apis/index'
 import { Ionicons } from '@expo/vector-icons'
 import Modal from "react-native-modal";
+import Toast from 'react-native-toast-message';
 const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart, token, handleChangeNotice, handleChangeOrderList }) => {
     const formatter = new Intl.NumberFormat('en-US')
     const [orderCheckOut, setOrderCheckOut] = useState({})
@@ -62,25 +62,53 @@ const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart, 
         const year = date.getFullYear();
         const today = `${year}-${month}-${day}`;
         if (orderCheckOut.address === "") {
-            Alert.alert('Missing', `Fill your address`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, Fill your address',
+                position: 'bottom'
+            });
         }
         else if (orderCheckOut.phoneNumber === null) {
-            Alert.alert('Missing', `Fill your phoneNumber`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, Fill your phoneNumber',
+                position: 'bottom'
+            });
         }
         else if (orderCheckOut.phoneNumber.length !== 10) {
-            Alert.alert('Missing', `Your phone number incorrect format`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, Your phone number incorrect format',
+                position: 'bottom'
+            });
         }
         else if (orderCheckOut.city === "") {
-            Alert.alert('Missing', `Fill your city`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, Fill your city',
+                position: 'bottom'
+            });
         }
         else if (orderCheckOut.district === "") {
-            Alert.alert('Missing', `Fill your district`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, Fill your district',
+                position: 'bottom'
+            });
         }
         else if (orderCheckOut.commune === "") {
-            Alert.alert('Missing', `Fill your commune`);
+            Toast.show({
+                type: 'info',
+                text1: 'Missing, Fill your commune',
+                position: 'bottom'
+            });
         }
         else if (orderCheckOut.product === null || orderCheckOut.product.length < 1) {
-            Alert.alert('Missing', `You don't have product`);
+            Toast.show({
+                type: 'info',
+                text1: "Missing, You don't have product",
+                position: 'bottom'
+            });
         }
         else {
             setIsPayment(true)
@@ -116,22 +144,41 @@ const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart, 
                             })
                         })
                         .catch(error => {
-                            console.log(error)
+                            
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                         })
                     handleChangeOrderList(result)
                     updateCart(userInformation.email, [], token)
                         .then(result => {
                             handleChangeDataCart([])
-                            Alert.alert('Successful', `Your order has been created`);
+                            Toast.show({
+                                type: 'success',
+                                text1: `Successful, Your order has been created!`,
+                                position: 'bottom'
+                            });
                             navigation.navigate('Homepage')
                             setIsPayment(false)
                         })
                         .catch(error => {
-                            console.log(error)
+                            
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                         })
                 })
                 .catch(error => {
-                    console.log(error)
+                    
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 })
         }
     }
@@ -218,6 +265,7 @@ const Payment = ({ navigation, cartData, userInformation, handleChangeDataCart, 
                 <ActivityIndicator size='large' color='white' />
             </Modal>
             }
+            <Toast/>
         </View>
 
     );

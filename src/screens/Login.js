@@ -30,6 +30,7 @@ import {
     TextLinkContent
 } from '../components/styles'
 import { fetchUserDetails } from '../apis/index'
+import Toast from 'react-native-toast-message';
 const { brand, darkLight, primary } = Colors
 const Login = ({ navigation, handleSetLogged }) => {
     const [hidePassword, setHidePassword] = useState(true)
@@ -59,12 +60,21 @@ const Login = ({ navigation, handleSetLogged }) => {
                             })
                         );
                     } catch (error) {
-                        console.error('Lỗi khi lưu trữ:', error);
+                        Toast.show({
+                            type: 'error',
+                            text1: error.message,
+                            position: 'bottom'
+                        });
                     }
                 }
             })
             .catch(error => {
-                console.log(error.response)
+                
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
                 setSubmitting(false)
             })
     }
@@ -141,6 +151,7 @@ const Login = ({ navigation, handleSetLogged }) => {
                     )}
                 </Formik>
             </InnerContainer>
+            <Toast/>
         </StyledContainer>
     );
 }

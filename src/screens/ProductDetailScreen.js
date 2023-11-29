@@ -8,7 +8,6 @@ import {
     Image,
     ActivityIndicator,
     Dimensions,
-    Alert,
     FlatList,
     Share
 } from 'react-native';
@@ -18,6 +17,8 @@ import {
 import { fetchGoodsByName, updateCart, fetchBestLaptop } from '../apis/index'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Lightbox from 'react-native-lightbox-v2';
+import Modal from "react-native-modal";
+import Toast from 'react-native-toast-message';
 const { width, height } = Dimensions.get('window');
 const ProductDetailScreen = ({ navigation, route, userInformation, cartData, token, handleChangeDataCart }) => {
     const formatter = new Intl.NumberFormat('en-US')
@@ -28,7 +29,7 @@ const ProductDetailScreen = ({ navigation, route, userInformation, cartData, tok
     const [isShowMore, setIsShowMore] = useState(false)
     const [isShowMoreReview, setIsShowMoreReview] = useState(false)
     const [limitDisplayReview, setLimitDisplayReview] = useState(5)
-
+    const [isWishlist, setIsWishlist] = useState(false)
     const collectionToStateMap = {
         'laptop-gaming': 'resultBestLaptopGaming',
         'laptop': 'resultBestLaptop',
@@ -48,7 +49,12 @@ const ProductDetailScreen = ({ navigation, route, userInformation, cartData, tok
                 setProduct(result)
             })
             .catch(error => {
-                console.log(error)
+
+                Toast.show({
+                    type: 'error',
+                    text1: error.message,
+                    position: 'bottom'
+                });
             })
     }, [route])
 
@@ -100,27 +106,46 @@ const ProductDetailScreen = ({ navigation, route, userInformation, cartData, tok
             }
             const result = array.findIndex(isSame);
             if (result !== -1) {
-                Alert.alert('Ops!!', `This product already exists in your cart`);
+                Toast.show({
+                    type: 'info',
+                    text1: 'Ops!!, This product already exists in your cart',
+                    position: 'bottom'
+                });
             } else {
+                setIsWishlist(true)
                 array.push({ ...product, quantity });
                 handleChangeDataCart(array)
                 updateCart(userInformation.email, array, token)
                     .then(result => {
+                        setIsWishlist(false)
                         navigation.navigate('Cart')
                     })
                     .catch(error => {
-                        console.log(error)
+
+                        Toast.show({
+                            type: 'error',
+                            text1: error.message,
+                            position: 'bottom'
+                        });
                     })
             }
         } else {
-            Alert.alert('Ops!!', `You need to login`);
+            Toast.show({
+                type: 'info',
+                text1: 'Ops!!, You need to login',
+                position: 'bottom'
+            });
         }
     }
     const longPress = async (url) => {
         try {
             const result = await Share.share({ url: url })
         } catch (error) {
-            Alert.alert(error.message);
+            Toast.show({
+                type: 'error',
+                text1: error.message,
+                position: 'bottom'
+            });
         }
     }
     return (
@@ -299,6 +324,11 @@ const ProductDetailScreen = ({ navigation, route, userInformation, cartData, tok
                     <ActivityIndicator size='large' color='white' />
                 </View>
             )}
+            {isWishlist && <Modal isVisible={isWishlist}>
+                <ActivityIndicator size='large' color='white' />
+            </Modal>
+            }
+            <Toast />
         </View>
     );
 }

@@ -15,6 +15,7 @@ import {
 import {
     fetchUpdateNotice
 } from '../apis/index'
+import Toast from 'react-native-toast-message';
 const Notification = ({ navigation, lengthNotice, token, userInformation, handleReadNotice, refreshing, onRefresh }) => {
     const [listNotice, setListNotice] = useState(null)
     useEffect(() => {
@@ -36,7 +37,12 @@ const Notification = ({ navigation, lengthNotice, token, userInformation, handle
                     handleReadNotice(id)
                 })
                 .catch(error => {
-                    console.log(error)
+
+                    Toast.show({
+                        type: 'error',
+                        text1: error.message,
+                        position: 'bottom'
+                    });
                 })
         }
     }
@@ -47,9 +53,9 @@ const Notification = ({ navigation, lengthNotice, token, userInformation, handle
                 <Text style={{ color: 'white', textAlign: 'center', flex: 1, fontSize: 20, fontWeight: 'bold' }}>Notification</Text>
             </HomepageContainer>
             {token !== null && <ScrollView style={{ backgroundColor: 'black' }} refreshControl={
-                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
-                                tintColor="white"
-                            />}>
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
+                    tintColor="white"
+                />}>
                 {listNotice && listNotice.map((item, index) => (
                     <TouchableOpacity onPress={() => {
                         handleReadNoticeCus(item._id, item.isReadCus)
@@ -70,7 +76,7 @@ const Notification = ({ navigation, lengthNotice, token, userInformation, handle
                 ))}
 
             </ScrollView>}
-
+            <Toast />
         </View>
     );
 }
