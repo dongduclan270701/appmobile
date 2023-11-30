@@ -335,7 +335,7 @@ const OrderDetail = ({ navigation, userInformation, route, token, handleChangeNo
                         ))}
                         <LinePayment style={{ flexDirection: 'row' }} />
                         <View style={[styles.information, { justifyContent: 'space-between', padding: 10 }]}>
-                            <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16 }}>Total amount ( 3 goods)</Text>
+                            <Text style={{ color: 'white', paddingHorizontal: 10, fontSize: 16 }}>Total amount ( {dataCart.product.length} goods)</Text>
                             <Text style={{ color: 'red', paddingHorizontal: 10, fontSize: 16 }}>{formatter.format(dataCart.sumOrder - 30000)} VNĐ</Text>
                         </View>
                         <LinePayment style={{ flexDirection: 'row' }} />
