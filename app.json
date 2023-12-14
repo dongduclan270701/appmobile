@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "App Awesome",
+    "slug": "app-awesome",
+    "description": "this is awesome app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "useClassicUpdates": true,
+      "enabled": true,
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ranconkoyx.app-awesome"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.ranconkoyx.appawesome"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5c64f4a0-764a-4578-a58e-4253ef9cbe5e"
+      }
+    },
+    "owner": "ranconkoyx"
+  }
+}
