@@ -1,5 +1,6 @@
 import axios from 'axios'
-const API_ROOT = 'http://localhost:8017'
+// const API_ROOT = 'http://localhost:8017'
+const API_ROOT = 'https://ktech-admin.onrender.com'
 export const fetchUserDetails = async (username, password) => {
     const req = await axios.get(`${API_ROOT}/v1/users/${username}/${password}`)
     return req.data

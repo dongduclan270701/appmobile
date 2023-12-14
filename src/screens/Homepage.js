@@ -675,11 +675,15 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
                                     keyExtractor={(item, index) => index}
                                     horizontal={true} 
                                     renderItem={({ item }) => (
+                                        <TouchableOpacity onPress={() => {
+                                            navigation.navigate("ProductDetailScreen", item)
+                                        }}>
                                         <View style={styles.item}>
                                             <Image source={{ uri: item.img[0] }} style={{ width: '100%', height: '50%' }} />
                                             <Text style={styles.text}>{item.nameProduct}</Text>
                                             <Text style={styles.text}>{formatter.format(item.nowPrice)} VNĐ</Text>
                                         </View>
+                                        </TouchableOpacity>
                                     )}
                                 /> :
                                 <View style={[styles.loading]}>
@@ -709,11 +713,15 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
                                     keyExtractor={(item, index) => index}
                                     horizontal={true} 
                                     renderItem={({ item }) => (
+                                        <TouchableOpacity onPress={() => {
+                                            navigation.navigate("ProductDetailScreen", item)
+                                        }}>
                                         <View style={styles.item}>
                                             <Image source={{ uri: item.img[0] }} style={{ width: '100%', height: '50%' }} />
                                             <Text style={styles.text}>{item.nameProduct}</Text>
                                             <Text style={styles.text}>{formatter.format(item.nowPrice)} VNĐ</Text>
                                         </View>
+                                        </TouchableOpacity>
                                     )}
                                 /> :
                                 <View style={[styles.loading]}>
@@ -730,11 +738,15 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
                                     keyExtractor={(item, index) => index}
                                     horizontal={true}
                                     renderItem={({ item }) => (
+                                        <TouchableOpacity onPress={() => {
+                                            navigation.navigate("ProductDetailScreen", item)
+                                        }}>
                                         <View style={styles.item}>
                                             <Image source={{ uri: item.img[0] }} style={{ width: '100%', height: '50%' }} />
                                             <Text style={styles.text}>{item.nameProduct}</Text>
                                             <Text style={styles.text}>{formatter.format(item.nowPrice)} VNĐ</Text>
                                         </View>
+                                        </TouchableOpacity>
                                     )}
                                 /> :
                                 <View style={[styles.loading]}>
@@ -764,11 +776,15 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
                                     keyExtractor={(item, index) => index}
                                     horizontal={true} 
                                     renderItem={({ item }) => (
+                                        <TouchableOpacity onPress={() => {
+                                            navigation.navigate("ProductDetailScreen", item)
+                                        }}>
                                         <View style={styles.item}>
                                             <Image source={{ uri: item.img[0] }} style={{ width: '100%', height: '50%' }} />
                                             <Text style={styles.text}>{item.nameProduct}</Text>
                                             <Text style={styles.text}>{formatter.format(item.nowPrice)} VNĐ</Text>
                                         </View>
+                                        </TouchableOpacity>
                                     )}
                                 /> :
                                 <View style={[styles.loading]}>
@@ -785,11 +801,15 @@ const Homepage = ({ navigation, route, lengthCart, refreshing, onRefresh }) => {
                                     keyExtractor={(item, index) => index}
                                     horizontal={true} 
                                     renderItem={({ item }) => (
+                                        <TouchableOpacity onPress={() => {
+                                            navigation.navigate("ProductDetailScreen", item)
+                                        }}>
                                         <View style={styles.item}>
                                             <Image source={{ uri: item.img[0] }} style={{ width: '100%', height: '50%' }} />
                                             <Text style={styles.text}>{item.nameProduct}</Text>
                                             <Text style={styles.text}>{formatter.format(item.nowPrice)} VNĐ</Text>
                                         </View>
+                                        </TouchableOpacity>
                                     )}
                                 /> :
                                 <View style={[styles.loading]}>
